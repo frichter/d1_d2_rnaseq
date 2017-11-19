@@ -1,6 +1,6 @@
 
 
-PrepNucMetadata = function(nuclear_cts) {
+PrepNucMetadataHTS = function(nuclear_cts) {
   info_nuc = as.data.frame(names(nuclear_cts)[-1])
   names(info_nuc) = "ID"
   info_nuc %<>% 
@@ -12,7 +12,7 @@ PrepNucMetadata = function(nuclear_cts) {
 }
 
 
-PrepWCMetadata = function(whole_cell_cts) {
+PrepWCMetadataHTS = function(whole_cell_cts) {
   info_wc = as.data.frame(names(whole_cell_cts)[-1])
   names(info_wc) = "ID"
   info_wc %<>% 

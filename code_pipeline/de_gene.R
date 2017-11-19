@@ -14,9 +14,9 @@ p = c("limma", "edgeR",
 lapply(p, require, character.only = TRUE)
 
 ### set file names
-data = "allD2" ## "wc", "all", "allD1", "allD2"
-out_dir = "d1_d2_rnaseq/expression_data/"
-x_loc = paste0(out_dir, data, "_norm.RDS")
+data = "all" ## "wc", "all", "allD1", "allD2"
+out_dir = "d1_d2_rnaseq/expression_data_fc/"
+x_loc = paste0(out_dir, data, "_norm_strict.RDS") ## _norm_lax.RDS _norm_strict.RDS
 info_loc = paste0(out_dir, data, "_info.RDS")
 vobj_loc = paste0(out_dir, data, "_vobj.RDS")
 fit_loc = paste0(out_dir, data, "_fit.RDS")
@@ -28,7 +28,7 @@ info = readRDS(info_loc)
 dim(x)
 
 ## create model matrix
-design = model.matrix(~ Method + 0, info) ##  Receptor + 
+design = model.matrix(~ Cell_type + Method + 0, info) ##  
 
 ## estimate variance as function of mean expression
 vobj = voom(x, design, plot=TRUE)
@@ -39,8 +39,9 @@ fit = lmFit(vobj, design)
 saveRDS(fit, fit_loc)
 
 #### simple DE (comment out lines you don't want to compare)
-cont_matrix = makeContrasts(## Receptor_effect = ReceptorD2 - ReceptorD1, 
-                            Method_effect = MethodWC - MethodNuc, ##
+cont_matrix = makeContrasts(Cell_type_effect = Cell_typeD2 - Cell_typeD1, 
+                            ## Receptor_effect = ReceptorD2 - ReceptorD1, 
+                            Method_effect = Methodwc, ##
                             levels = design)
 # cont_matrix = makeContrasts(levels = design)
 fit2 = contrasts.fit(fit, cont_matrix)
@@ -48,8 +49,8 @@ fit2 = eBayes(fit2)
 
 summary(decideTests(fit2))
 
-## Receptor_effect Method_effect
-topSet = topTable(fit2, coef = "Method_effect", p.value = 0.05, number = nrow(fit2))
+## Cell_type_effect Receptor_effect Method_effect
+topSet = topTable(fit2, coef = "Cell_type_effect", p.value = 0.05, number = nrow(fit2))
 
 ### sanity checks that D1 and D2 are differentially expressed
 drd1 = "ENSMUSG00000021478"
