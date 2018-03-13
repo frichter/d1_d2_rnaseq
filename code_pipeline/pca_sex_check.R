@@ -33,26 +33,24 @@ plotPCA = function(C, attrib, id, idx=1:2) {
   return(p)
 }
 
-vobj = readRDS("d1_d2_rnaseq/expression_data/all_vobj.RDS")
-info = readRDS("d1_d2_rnaseq/expression_data/all_info.RDS")
-info %<>% mutate(Receptor = as.factor(paste(Receptor, "neurons")))
-fit = readRDS("d1_d2_rnaseq/expression_data/all_fit.RDS")
-
+vobj = readRDS("d1_d2_rnaseq/expression_data_fc/wc/vobj.RDS")
+info = readRDS("d1_d2_rnaseq/expression_data_fc/wc/info.RDS")
+info %<>% mutate(Cell_type = as.factor(paste(Cell_type, "neurons")))
+# fit = readRDS("d1_d2_rnaseq/expression_data_fc/all/all_fit.RDS")
+# R = residuals(fit, vobj)
 # Mean center each gene (don't scale variance, that's what voom is for)
 dataScaled = t(scale(t(vobj$E), scale = FALSE, center = TRUE))
 # calculate the covariance matrix
 C = cov(dataScaled)
 
-
-p = plotPCA(C, info$Method, info$ID, idx=1:2) ## Receptor Method
+p = plotPCA(C, info$Cell_type, info$ID, idx=1:2) ## Receptor Method
 # choose to add text here:
-p = p + geom_text(aes(label = ID), col = "black", show.legend = FALSE, check_overlap = F,
-                  hjust = "inward")
-p = p + scale_color_manual(values = c("purple4", "skyblue")) 
-##   c("green3", "red")
+p = p + geom_text(aes(label = ID), col = "black", show.legend = FALSE, check_overlap = F, hjust = "inward")
+p = p + scale_color_manual(values =  c("green3", "red")) ## c("purple4", "skyblue")) ##
 p
- ## neuronType method
-ggsave("d1_d2_rnaseq/figures/qc/pc1_pc2_method_label.png", p, width = 5, height = 4, units = "in")
+## neuronType method
+ggsave("d1_d2_rnaseq/figures/qc_fc/voom_limma/wc_pc1_pc2_cell_type_label.png", 
+       p, width = 5, height = 4, units = "in")
 
 ## repeat with residuals
 R = residuals(fit, vobj)
@@ -73,14 +71,19 @@ vobj$E[i,] %>% head
 sum(vobj$E[i,])#XIST = "UTY" = 
 sex_gene_df = cbind(Xist = vobj$E[i,], Uty = vobj$E[j,]) %>%
   as.data.frame %>%
-  mutate(Sample_ID = colnames(vobj$E))
+  mutate(file_name = colnames(vobj$E))
 
-p = ggplot(sex_gene_df, aes(x = Xist, y = Uty, label = Sample_ID)) + # Sex
+p = sex_gene_df %>% 
+  left_join(info) %>% 
+  ggplot(aes(x = Xist, y = Uty, color = gender)) + # gender , label = Sample_ID
   geom_point() +
-  geom_text(hjust = "inward", vjust = "inward") +
+  # geom_text(hjust = "inward", vjust = "inward") +
   # geom_text(data = sex_gene_df %>% filter(id_logic), col = "black", nudge_y = 0.3, check_overlap = TRUE) + 
   # geom_point(data = sex_gene_df %>% filter(id_logic), col = "black") +
   theme_classic()
 p
-ggsave("d1_d2_rnaseq/figures/qc/sex_check.png", p, width = 5, height = 4.5)
+ggsave("d1_d2_rnaseq/figures/qc_fc/ribo_sex_check.png", p, width = 3, height = 2.5)
+
+
+
 

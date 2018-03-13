@@ -1,8 +1,8 @@
 # Felix Richter
 # felix.richter@icahn.mssm.edu
 # 10/31/2017
-# Description: run alignment commands, count number of 
-#              features (including introns) in SAM files
+# Description: run alignment commands, FastQC scripts and anything else fastq
+#              related (e.g., maybe trimming in the future)
 ################################################################################
 
 
@@ -25,12 +25,13 @@ class fq_pair(object):
         '''
         ## assign the filenames to the instance
         self.pair_file_loc = pair_file_loc
-        self.r1 = pair_file_loc + "_R1.fastq.gz"
-        self.r2 = pair_file_loc + "_R2.fastq.gz"
-        ## nuclear filenames have an annoying 001 at the end
-        if re.search("nuclear", pair_file_loc):
+        ## nuclear and ribo filenames have an annoying 001 at the end
+        if re.search("nuclear|ribo", pair_file_loc):
             self.r1 = pair_file_loc + "_R1_001.fastq.gz"
             self.r2 = pair_file_loc + "_R2_001.fastq.gz"
+        else:
+            self.r1 = pair_file_loc + "_R1.fastq.gz"
+            self.r2 = pair_file_loc + "_R2.fastq.gz"
         ## obtain the Lane from the filename
         self.lane = re.search("L[0-9]{3}", pair_file_loc)
         ## obtain barcode
@@ -83,9 +84,15 @@ os.chdir(fq_i.home_dir)
 fq_i.RunHISAT2()
 
 
+## /sc/orga/projects/chdiTrios/Felix/D1_D2_rnaseq/
+
+home_dir = "/sc/orga/projects/chdiTrios/Felix/D1_D2_rnaseq/"
+hisat2_idx = "grcm38_snp_tran/genome_snp_tran"
+
 ## if I loop will it wait for subprocess to finish before proceeding? Yes, looks like it
 ## Want to loop since multi-threading the hisat2 command
-fq_file_iter = glob.iglob("D1_D2_whole_cell/*.fastq.gz") ## D1_D2_nuclear D1_D2_whole_cell
+## D1_D2_nuclear D1_D2_whole_cell D1_D2_ribo
+fq_file_iter = glob.iglob(home_dir + "D1_D2_ribo/*.fastq.gz")
 fq_file_list = [re.sub("_R[12].*fastq.gz", "", i) for i in fq_file_iter]
 
 ## keep uniques
@@ -97,9 +104,10 @@ len(fq_file_list)
 # fq_file_list = ["D1_D2_nuclear/D1-1_TGACCA_L004", "D1_D2_nuclear/D1-2_GCCAAT_L005"]
 
 for fq_i_file_loc in fq_file_list:
-    fq_i = fq_pair(fq_i_file_loc)
+    fq_i = fq_pair(fq_i_file_loc, home_dir, hisat2_idx)
     os.chdir(fq_i.home_dir)
     fq_i.RunHISAT2()
+    fq_i.FastQC()
 
 
 
@@ -109,7 +117,7 @@ for fq_i_file_loc in fq_file_list:
 
 
 #### possibly deprecated 11/18/2017:
-# 
+#
 # def SamtoolsSort(self):
 #     sort_cmd = "time samtools view -u %s | samtools sort -T %s.temp -o %s.sorted.bam -@ 12"
 # def StringTieGTF(self):

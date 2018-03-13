@@ -1,6 +1,7 @@
 # Felix Richter, Hope Kronman
-# 8/10/2017
-# normalize count matrix RNAseq output, and integrate metadata
+# Created 8/10/2017
+# Description: run DE analysis with voom/limma
+##############################################################
 
 setwd("D:/Dropbox/PhD/")
 setwd("/Users/frichter/Dropbox (Personal)/PhD/")
@@ -14,7 +15,7 @@ p = c("limma", "edgeR",
 lapply(p, require, character.only = TRUE)
 
 ### set file names
-data = "all" ## "wc", "all", "allD1", "allD2"
+data_subset = "all" ## "wc", "all", "allD1", "allD2"
 out_dir = "d1_d2_rnaseq/expression_data_fc/"
 x_loc = paste0(out_dir, data, "_norm_strict.RDS") ## _norm_lax.RDS _norm_strict.RDS
 info_loc = paste0(out_dir, data, "_info.RDS")
@@ -72,5 +73,10 @@ topSet %>% as.data.frame %>%
 
 # sum(!(row.names(x_nuc) %in% row.names(x_wc)))
 # sum(!(row.names(x_wc) %in% row.names(x_nuc)))
+
+all_cor = cor(vobj$E)
+
+min(all_cor)
+
 
 

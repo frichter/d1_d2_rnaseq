@@ -13,8 +13,8 @@ lapply(p, require, character.only = TRUE)
 drd1 = "ENSMUSG00000021478"
 drd2 = "ENSMUSG00000032259"
 
-vobj = readRDS("d1_d2_rnaseq/expression_data/all_vobj.RDS")
-info = readRDS("d1_d2_rnaseq/expression_data/all_info.RDS")
+# vobj = readRDS("d1_d2_rnaseq/expression_data/all_vobj.RDS")
+# info = readRDS("d1_d2_rnaseq/expression_data/all_info.RDS")
 d_expr = vobj$E[c(drd1, drd2), ] %>% as.data.frame %>% 
   mutate(ens_id = c(drd1, drd2)) %>% 
   gather(key = "file_name", value = "expr", -ens_id) %>% ## ID

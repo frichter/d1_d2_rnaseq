@@ -24,7 +24,7 @@ setwd("/sc/orga/projects/chdiTrios/Felix/D1_D2_rnaseq")
 
 ## directories
 ## D1_D2_whole_cell D1_D2_whole_cell_repeat D1_D2_nuclear
-input_dir_list = c("D1_D2_whole_cell", "D1_D2_whole_cell_repeat", "D1_D2_nuclear")
+input_dir_list = c("D1_D2_whole_cell", "D1_D2_whole_cell_repeat", "D1_D2_nuclear", "D1_D2_ribo")
 input_file_list = map(input_dir_list, ~ list.files(., ".*sam", full.names = T)) %>% unlist
 
 ## actual featureCounts command
@@ -33,10 +33,12 @@ fc = featureCounts(files = input_file_list,
                    annot.ext = "Mus_musculus.GRCm38.90.gtf",
                    ## options: "Mus_musculus.GRCm38.90.gtf" stringtie_gtf
                    isGTFAnnotationFile = T,
-                   GTF.featureType = "gene", ## Checked GTF that this has introns
+                   ## if using introns, use "gene" for GTF.featureType
+                   ## for no introns, use "exon"
+                   GTF.featureType = "exon", ## Checked GTF that this has introns
                    GTF.attrType = "gene_id",
                    juncCounts = T,  ## provides a fc$counts_junction matrix
-                   useMetaFeatures=TRUE,
+                   useMetaFeatures=FALSE, ## TRUE for gene-level, FALSE for exons
                    allowMultiOverlap = TRUE,
                    nthreads = 12,
                    strandSpecific = 0, #0, 1 or 2
@@ -51,7 +53,7 @@ fc = featureCounts(files = input_file_list,
 ## over half the reads are intronic
 
 ## counts_WC_17_11 counts_Nuc_17_11
-saveRDS(fc, file = "counts_matrices/counts_all_17_11.RDS")
+saveRDS(fc, file = "counts_matrices/counts_exon_17_12_08.RDS")
 
 
 ## manuals
