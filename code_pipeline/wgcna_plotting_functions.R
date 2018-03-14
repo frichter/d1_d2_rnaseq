@@ -71,10 +71,10 @@ plotTraitCor = function(datTraits, filename) {
   par(mar = c(6, 8.5, 3, 3))
   # Display the correlation values within a heatmap plot
   labeledHeatmap(Matrix = traitCor,
-                 xLabels = colnames(info.design.df),
-                 yLabels = colnames(info.design.df),
+                 xLabels = colnames(datTraits),
+                 yLabels = colnames(datTraits),
                  colorLabels = FALSE,
-                 colors = greenWhiteRed(50),
+                 colors = blueWhiteRed(50),
                  textMatrix = textMatrix,
                  setStdMargins = FALSE,
                  cex.text = 0.3,
