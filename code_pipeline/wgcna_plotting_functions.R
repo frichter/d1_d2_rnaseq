@@ -63,7 +63,8 @@ plotTraitModule = function(datExpr, geneModules, datTraits, filename, color_scal
   mtx_filename = gsub(".pdf", ".txt", filename)
   
   mod_trait_cor = cbind(signif(moduleTraitCor, 2), signif(moduleTraitPvalue, 1)) %>% as.data.frame
-  names(mod_trait_cor) = paste0(names(mod_trait_cor), c("cor", "cor", "p", "p"))
+  traits = ncol(datTraits)
+  names(mod_trait_cor) = paste0(names(mod_trait_cor), c(rep("cor", traits), rep("p", traits)))
   mod_trait_cor %>% 
     mutate(module = row.names(mod_trait_cor)) %>% 
     select(module, everything()) %>% 
@@ -145,31 +146,54 @@ createGSMMTable = function(datExpr, moduleColors, datTraits,
 
 
 
-createModuleScatterPlots <- function(datExpr, info.design.df, geneModules, 
-                                     geneModules.interest, filename) {
-  MEsO = moduleEigengenes(datExpr, geneModules)$eigengenes
-  MEs = orderMEs(MEsO)
-  modNames = substring(names(MEs), 3)
-  
-  trait.df = as.data.frame(info.design.df[, trait.interest])
-  names(trait.df) = trait.interest
-  geneModuleMembership = as.data.frame(cor(datExpr, MEs, use = "p"))
-  geneTraitSignificance = as.data.frame(cor(datExpr, trait.df, use = "p"))
-  names(geneTraitSignificance) = paste("GS.", names(trait.df), sep="")
-  
-  pdf(file = filename, width = 7, height = 7)
-  for(module in geneModules.interest) {
-    column = match(module, modNames)
-    moduleGenes = geneModules==module
-    par(mfrow = c(1,1))
-    verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
-                       abs(geneTraitSignificance[moduleGenes, 1]),
-                       xlab = paste("Module Membership in", module, "module"),
-                       ylab = paste("Gene significance for", trait.interest), 
-                       main = paste("Module membership vs. gene significance\n"),
-                       cex.main = 1.2, cex.lab = 1.2, cex.axis = 1.2, col = module)
-  }
-  dev.off()
+# createModuleScatterPlots <- function(datExpr, info.design.df, geneModules, 
+#                                      geneModules.interest, filename) {
+#   MEsO = moduleEigengenes(datExpr, geneModules)$eigengenes
+#   MEs = orderMEs(MEsO)
+#   modNames = substring(names(MEs), 3)
+#   
+#   trait.df = as.data.frame(info.design.df[, trait.interest])
+#   names(trait.df) = trait.interest
+#   geneModuleMembership = as.data.frame(cor(datExpr, MEs, use = "p"))
+#   geneTraitSignificance = as.data.frame(cor(datExpr, trait.df, use = "p"))
+#   names(geneTraitSignificance) = paste("GS.", names(trait.df), sep="")
+#   
+#   pdf(file = filename, width = 7, height = 7)
+#   for(module in geneModules.interest) {
+#     column = match(module, modNames)
+#     moduleGenes = geneModules==module
+#     par(mfrow = c(1,1))
+#     verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
+#                        abs(geneTraitSignificance[moduleGenes, 1]),
+#                        xlab = paste("Module Membership in", module, "module"),
+#                        ylab = paste("Gene significance for", trait.interest), 
+#                        main = paste("Module membership vs. gene significance\n"),
+#                        cex.main = 1.2, cex.lab = 1.2, cex.axis = 1.2, col = module)
+#   }
+#   dev.off()
+# }
+
+
+WrapperForCytoscapeExport = function(modules, datExpr, TOM, moduleColors, cytoprefix) {
+  # Select module probes
+  genes = col.names(datExpr)
+  inModule = is.finite(match(moduleColors, modules))
+  modGenes = genes[inModule]
+  # Select the corresponding Topological Overlap
+  modTOM = TOM[inModule, inModule]
+  dimnames(modTOM) = list(modGenes, modGenes)
+  print(modTOM[1:5, 1:5])
+  print(dim(modTOM))
+  # Export the network into edge and node list files Cytoscape can read
+  cyt = exportNetworkToCytoscape(modTOM,
+                                 edgeFile = paste0(cytoprefix, "cytoscape_modules/cs_edges_",
+                                                   paste(modules, collapse="-"), ".txt"),
+                                 nodeFile = paste0(cytoprefix, "cytoscape_modules/cs_nodes_",
+                                                   paste(modules, collapse="-"), ".txt"),
+                                 weighted = TRUE,
+                                 threshold = 0.02,
+                                 nodeNames = modGenes,
+                                 nodeAttr = moduleColors[inModule])
 }
 
 # createEigengeneNetwork <- function(datExpr, geneModules, trait.interest, filename){

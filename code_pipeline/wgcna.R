@@ -53,10 +53,10 @@ datTraits = model.matrix( ~ Cell_type + Method + gender + 0, info) %>% as.data.f
   mutate(MethodNuc = as.numeric((Methodribo == 0) & (Methodwc == 0))) %>% 
   select(Cell_typeD1:Methodwc, MethodNuc, genderM) #
 
-datTraits = model.matrix( ~ Cell_type + 0, info) %>% as.data.frame
+datTraits = model.matrix( ~ Cell_type + gender + 0, info) %>% as.data.frame
 # + gender + Method + Cell_type
 head(datTraits)
-names(datTraits) = c("D1 neurons ", "D2 neurons ")
+names(datTraits) = c("D1 neurons ", "D2 neurons ", "Sex (Male) ")
 
 #############################################
 #  Using the voom-limma log-transformed data:
@@ -103,7 +103,7 @@ PlotSoftThreshold(sft, filename)
 # one-step pure WGCNA (ie no coexpp library)
 ################################################
 
-beta_choice = 20
+beta_choice = 5
 wgcna_file_base = results_prefix %>% paste0(., "bicor_signed_beta", beta_choice, 
                                             "_min100_mergecutheight2neg2_static99_",
                                             "minKMEtoStay1neg2_pamF_")
@@ -122,7 +122,7 @@ net = blockwiseModules(datExpr, power = beta_choice,
                        # this also greatly determines how "clean". Geschwind uses negative (probably means false)
                        # pamRespectsDendro = TRUE,
                        maxBlockSize = 46300,
-                       saveTOMs = FALSE,
+                       saveTOMs = TRUE,
                        saveTOMFileBase = wgcna_file_base,
                        verbose = 3)
 
@@ -131,6 +131,8 @@ moduleColors = labels2colors(moduleLabels)
 modMembers = data.frame(Gene = colnames(datExpr), Module = moduleColors)
 
 unique(moduleColors) %>% length
+
+saveRDS(net, paste0(wgcna_file_base, "bwm_out_18_05_05.RDS"))
 
 # Plot the dendrogram and the module colors underneath
 # pdf(file = paste0(wgcna_file_base, "dendro_genes_min20_18_04_23.pdf"), width = 12, height = 9)
@@ -183,6 +185,24 @@ filename = paste0(wgcna_file_base, "GS_MM_18_05_05.csv")
 createGSMMTable(datExpr, moduleColors, datTraits, trait_interest, filename)
 
 
+####################################
+# Export every module to cytoscape
+####################################
+load(paste0(wgcna_file_base, "-block.1.RData"))
+
+TOM = TOMsimilarityFromExpr(datExpr, power = beta_choice)
+
+# Select modules
+modules = unique(moduleColors)[[2]]
+cytoprefix = gsub("vst_", "", results_prefix)
+WrapperForCytoscapeExport(modules, datExpr, TOM, moduleColors, cytoprefix) 
+
+
+## link for GO enrichment:
+# https://labs.genetics.ucla.edu/horvath/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/FemaleLiver-04-Interfacing.R
+
+
+
 # trying multi-step
 # adjacency = adjacency(gnxp, power = softPower)
 # str(adjacency)
@@ -190,9 +210,6 @@ createGSMMTable(datExpr, moduleColors, datTraits, trait_interest, filename)
 # str(TOM)
 # dissTOM = 1-TOM
 # str(dissTOM)
-
-## link for GO enrichment:
-# https://labs.genetics.ucla.edu/horvath/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/FemaleLiver-04-Interfacing.R
 
 ####################################
 # Previous coexpp code to parse:
