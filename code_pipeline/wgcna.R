@@ -28,12 +28,12 @@ enableWGCNAThreads(6)
 #  load data/inputs
 #########################################
 
-parent_subset = "ribo" ## all nuclear wc ribo
+parent_subset = "nuclear" ## all nuclear wc ribo
 home_dir = paste0("d1_d2_rnaseq/expression_data_fc/", parent_subset, "/")
 # results_prefix = paste0(home_dir, "wgcna/vobjE_")
 # vobj_scaled_noF_ vobjE_noF_
 
-data_subset = "ribo" ## all nuclear wc ribo D1 D2 
+data_subset = "nuclear" ## all nuclear wc ribo D1 D2 
 # results_prefix = paste0("/sc/orga/projects/chdiTrios/Felix/D1_D2_rnaseq/wgcna/", data_subset, "_results/vobjE_")
 results_prefix = paste0("/sc/orga/projects/chdiTrios/Felix/D1_D2_rnaseq/wgcna/", data_subset, "_results/vst_")
 
@@ -51,12 +51,15 @@ info = readRDS(paste0(home_dir, "info.RDS"))
 # prepare traits matrix # + gender
 datTraits = model.matrix( ~ Cell_type + Method + gender + 0, info) %>% as.data.frame %>% 
   mutate(MethodNuc = as.numeric((Methodribo == 0) & (Methodwc == 0))) %>% 
-  select(Cell_typeD1:Methodwc, MethodNuc, genderM) #
+  select(Cell_typeD1:Methodwc, MethodNuc) # genderM
 
-datTraits = model.matrix( ~ Cell_type + gender + 0, info) %>% as.data.frame
+datTraits = model.matrix( ~ Cell_type + 0, info) %>% as.data.frame
 # + gender + Method + Cell_type
+
+## renaming:
 head(datTraits)
-names(datTraits) = c("D1 neurons ", "D2 neurons ", "Sex (Male) ")
+names(datTraits) = c("D1 neurons ", "D2 neurons ")
+#, "RiboTag ", "Whole cell ", "Nuclear ") # , "Sex (Male) ")
 
 #############################################
 #  Using the voom-limma log-transformed data:
@@ -103,7 +106,8 @@ PlotSoftThreshold(sft, filename)
 # one-step pure WGCNA (ie no coexpp library)
 ################################################
 
-beta_choice = 5
+beta_choice = 30
+# ribo: 5, nuclear: 30, wc: 20, all: 30
 wgcna_file_base = results_prefix %>% paste0(., "bicor_signed_beta", beta_choice, 
                                             "_min100_mergecutheight2neg2_static99_",
                                             "minKMEtoStay1neg2_pamF_")
@@ -190,12 +194,14 @@ createGSMMTable(datExpr, moduleColors, datTraits, trait_interest, filename)
 ####################################
 load(paste0(wgcna_file_base, "-block.1.RData"))
 
-TOM = TOMsimilarityFromExpr(datExpr, power = beta_choice)
+TOM = as.matrix(TOM)
+# TOM = TOMsimilarityFromExpr(datExpr, power = beta_choice)
 
 # Select modules
-modules = unique(moduleColors)[[2]]
+# modules = [[2]]
 cytoprefix = gsub("vst_", "", results_prefix)
-WrapperForCytoscapeExport(modules, datExpr, TOM, moduleColors, cytoprefix) 
+
+walk(unique(moduleColors), WrapperForCytoscapeExport, datExpr, TOM, moduleColors, cytoprefix) 
 
 
 ## link for GO enrichment:

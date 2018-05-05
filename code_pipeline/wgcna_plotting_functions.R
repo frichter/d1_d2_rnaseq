@@ -175,8 +175,9 @@ createGSMMTable = function(datExpr, moduleColors, datTraits,
 
 
 WrapperForCytoscapeExport = function(modules, datExpr, TOM, moduleColors, cytoprefix) {
+  print(modules)
   # Select module probes
-  genes = col.names(datExpr)
+  genes = colnames(datExpr)
   inModule = is.finite(match(moduleColors, modules))
   modGenes = genes[inModule]
   # Select the corresponding Topological Overlap
@@ -194,6 +195,7 @@ WrapperForCytoscapeExport = function(modules, datExpr, TOM, moduleColors, cytopr
                                  threshold = 0.02,
                                  nodeNames = modGenes,
                                  nodeAttr = moduleColors[inModule])
+  return(modules)
 }
 
 # createEigengeneNetwork <- function(datExpr, geneModules, trait.interest, filename){
