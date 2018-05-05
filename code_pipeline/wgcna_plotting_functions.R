@@ -26,7 +26,7 @@ PlotSoftThreshold = function(sft, filename) {
 }
 
 
-plotTraitModule = function(datExpr, geneModules, datTraits, filename) {
+plotTraitModule = function(datExpr, geneModules, datTraits, filename, color_scale) {
   nGenes = ncol(datExpr)
   nSamples = nrow(datExpr)
   
@@ -41,7 +41,7 @@ plotTraitModule = function(datExpr, geneModules, datTraits, filename) {
                       signif(moduleTraitPvalue, 1), ")", sep = "")
   dim(textMatrix) = dim(moduleTraitCor)
   
-  pdf(file = filename, width = 10, height = 6)
+  pdf(file = filename, width = 4, height = 6)
   par(mar = c(6, 8.5, 3, 3))
   # Display the correlation values within a heatmap plot
   labeledHeatmap(Matrix = moduleTraitCor,
@@ -49,14 +49,25 @@ plotTraitModule = function(datExpr, geneModules, datTraits, filename) {
                  yLabels = colnames(MEs),
                  ySymbols = colnames(MEs),
                  colorLabels = FALSE,
-                 colors = blueWhiteRed(50),
-                 textMatrix = textMatrix,
+                 colors = color_scale,
+                 # colors = blueWhiteRed(50),
+                 # cexCol = "#FFFFFF", ## not a real argument, unclear how to specify the textMatrix colors
+                 # textMatrix = textMatrix,
                  setStdMargins = FALSE,
                  cex.text = 0.2,
                  cex.lab.y = 0.5, 
                  zlim = c(-1,1),
                  main = paste("Module-trait relationships"))
   dev.off()
+  
+  mtx_filename = gsub(".pdf", ".txt", filename)
+  
+  mod_trait_cor = cbind(signif(moduleTraitCor, 2), signif(moduleTraitPvalue, 1)) %>% as.data.frame
+  names(mod_trait_cor) = paste0(names(mod_trait_cor), c("cor", "cor", "p", "p"))
+  mod_trait_cor %>% 
+    mutate(module = row.names(mod_trait_cor)) %>% 
+    select(module, everything()) %>% 
+    write_tsv(mtx_filename)
   return(moduleTraitCor)
 }
 
@@ -86,15 +97,13 @@ plotTraitCor = function(datTraits, filename) {
 }
 
 
-createGSMMTable <- function(datExpr, geneModules, info.design.df, 
-                            trait.interest, filename) {
+createGSMMTable = function(datExpr, moduleColors, datTraits, 
+                            trait_interest, filename) {
+  
   nSamples = nrow(datExpr)
-  MEsO = moduleEigengenes(datExpr, geneModules)$eigengenes
+  MEsO = moduleEigengenes(datExpr, moduleColors)$eigengenes
   MEs = orderMEs(MEsO)
   modNames = substring(names(MEs), 3)
-  
-  trait.df = as.data.frame(info.design.df[, trait.interest])
-  names(trait.df) = trait.interest
   
   geneModuleMembership = as.data.frame(cor(datExpr, MEs, use = "p"))
   MMPvalue = as.data.frame(corPvalueStudent(as.matrix(geneModuleMembership), nSamples))
@@ -102,19 +111,19 @@ createGSMMTable <- function(datExpr, geneModules, info.design.df,
   names(geneModuleMembership) = paste("MM", modNames, sep="")
   names(MMPvalue) = paste("p.MM", modNames, sep="")
   
-  geneTraitSignificance = as.data.frame(cor(datExpr, trait.df, use = "p"));
+  geneTraitSignificance = as.data.frame(cor(datExpr, datTraits, use = "p"));
   GSPvalue = as.data.frame(corPvalueStudent(as.matrix(geneTraitSignificance), nSamples))
   
-  names(geneTraitSignificance) = paste("GS.", names(trait.df), sep="")
-  names(GSPvalue) = paste("p.GS.", names(trait.df), sep="")
+  names(geneTraitSignificance) = paste("GS.", names(datTraits), sep="")
+  names(GSPvalue) = paste("p.GS.", names(datTraits), sep="")
   
   # Create the starting data frame
   geneInfo0 = data.frame(geneSymbol = colnames(datExpr),
-                         moduleColor = geneModules,
+                         moduleColor = moduleColors,
                          geneTraitSignificance,
                          GSPvalue)
-  # Order modules by their significance for trait.df
-  modOrder = order(-abs(cor(MEs, trait.df, use = "p")));
+  # Order modules by their significance for trait_interest
+  modOrder = order(-abs(cor(MEs, datTraits[, trait_interest], use = "p")));
   # Add module membership information in the chosen order
   for (mod in 1:ncol(geneModuleMembership))
   {
@@ -126,7 +135,7 @@ createGSMMTable <- function(datExpr, geneModules, info.design.df,
   }
   # Order the genes in the geneInfo variable first by module color, then by geneTraitSignificance
   geneOrder = order(geneInfo0$moduleColor, 
-                    -abs(geneInfo0[, paste("GS.", trait.interest, sep = "")]))
+                    -abs(geneInfo0[, paste("GS.", make.names(trait_interest), sep = "")]))
   #geneOrder = order(geneInfo0$moduleColor, 
   #                  -abs(geneInfo0[, paste("GS.", "L2HLHS.PHKG1", sep = "")]))
   geneInfo = geneInfo0[geneOrder, ]
@@ -163,31 +172,31 @@ createModuleScatterPlots <- function(datExpr, info.design.df, geneModules,
   dev.off()
 }
 
-createEigengeneNetwork <- function(datExpr, geneModules, trait.interest, filename){
-  MEs = moduleEigengenes(datExpr, geneModules)$eigengenes
-  trait.df = as.data.frame(info.design.df[, trait.interest])
-  names(trait.df) = trait.interest
-  MET = orderMEs(cbind(MEs, trait.df))
-  pdf(file = filename, width = 6, height = 6)
-  par(cex = 1.0)
-  plotEigengeneNetworks(MET, "Eigengene dendrogram", marDendro = c(0,4,2,0),
-                        plotHeatmaps = FALSE)
-  par(cex = 1.0)
-  plotEigengeneNetworks(MET, "Eigengene adjacency heatmap", marHeatmap = c(3,4,2,2),
-                        plotDendrograms = FALSE, xLabelsAngle = 90)
-  dev.off()
-}
-
-
-HeatmapWrapper <- function(m, colors, plot.raise_power=4, ...) {
-  diag(m) = NA
-  m = m ^ plot.raise_power
-  
-  heatmap(
-    m,
-    Rowv=NA, Colv=NA, scale="none", revC=TRUE, symm=TRUE, labRow="", labCol="",     
-    ColSideColors=as.character(colors),
-    RowSideColors=as.character(colors),
-    ...
-  )
-}
+# createEigengeneNetwork <- function(datExpr, geneModules, trait.interest, filename){
+#   MEs = moduleEigengenes(datExpr, geneModules)$eigengenes
+#   trait.df = as.data.frame(info.design.df[, trait.interest])
+#   names(trait.df) = trait.interest
+#   MET = orderMEs(cbind(MEs, trait.df))
+#   pdf(file = filename, width = 6, height = 6)
+#   par(cex = 1.0)
+#   plotEigengeneNetworks(MET, "Eigengene dendrogram", marDendro = c(0,4,2,0),
+#                         plotHeatmaps = FALSE)
+#   par(cex = 1.0)
+#   plotEigengeneNetworks(MET, "Eigengene adjacency heatmap", marHeatmap = c(3,4,2,2),
+#                         plotDendrograms = FALSE, xLabelsAngle = 90)
+#   dev.off()
+# }
+# 
+# 
+# HeatmapWrapper <- function(m, colors, plot.raise_power=4, ...) {
+#   diag(m) = NA
+#   m = m ^ plot.raise_power
+#   
+#   heatmap(
+#     m,
+#     Rowv=NA, Colv=NA, scale="none", revC=TRUE, symm=TRUE, labRow="", labCol="",     
+#     ColSideColors=as.character(colors),
+#     RowSideColors=as.character(colors),
+#     ...
+#   )
+# }

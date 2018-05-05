@@ -26,6 +26,8 @@ lapply(p, require, character.only = TRUE)
 
 ## load count matrix
 fc = readRDS("d1_d2_rnaseq/expression_data_fc/counts_matrices/counts_gene_fromExons_17_12_06.RDS")
+## gene counts from reads mapping to only exons: counts_gene_fromExons_17_12_06.RDS
+## gene counts from reads mapping to introns and exons: counts_all_17_12_06.RDS
 
 ## print file names to confirm you are looking at the correct data
 fc$targets
@@ -59,8 +61,6 @@ info %<>%
   mutate(sample_replicate = ifelse(file_name %in% filenames_to_add[[2]], paste0(sample_replicate, "_L8"), sample_replicate)) %>%
   ## create a unique ID for each sample
   unite(ID, Method, Cell_type, sample_replicate, remove = F)
-
-info
 
 ## how many samples are there for each?
 info %>% group_by(Method, Cell_type, gender) %>% tally
@@ -107,10 +107,10 @@ stats_long %>% group_by(Status, Method) %>%
 # if applicable
 #############################
 
-data_subset = "all" ## ribo nuclear wc all
+data_subset = "nuclear" ## ribo nuclear wc all
 
 files_to_keep = info %>% 
-  # filter(grepl(data_subset, Method)) %>% ## nuclear wc
+  filter(grepl(data_subset, Method)) %>% ## uncommend for nuclear wc ribo
   ## remove the abnormal riboseq files: abnormal PCA, no DRD2, 82% of reads unassigned/unmapped
   filter(file_name != "D1_D2_ribo.D2F4.sam", 
          file_name != "D1_D2_ribo.D1F3.sam") %>% 
@@ -132,7 +132,11 @@ info %<>% filter(file_name %in% files_to_keep)
 ## prepare info matrix
 ## clean factor levels
 info %<>% mutate_all(as.factor) %>% mutate_all(droplevels)
+info %>% group_by(Method, Cell_type, gender) %>% tally
+
 saveRDS(info, paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/info.RDS"))
+
+saveRDS(fc, paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/fc_gene_from_exon.RDS"))
 
 #############################
 # normalize counts with 
@@ -156,101 +160,15 @@ x = calcNormFactors(x)
 saveRDS(x, paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/norm.RDS"))
 ## all_norm_strict.RDS all_norm_lax.RDS
 
+## convert normalized data to RPKM and save as txt matrix
+# x = readRDS(paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/norm.RDS"))
+# rpkm(x)[1:5, 1:5]
+write.table(rpkm(x), paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/rpkm.txt"),
+            quote = F, sep = "\t")
 
-#############################
-# normalize counts with 
-# DESeq2
-#############################
+data_subset = "all"
+rpkm_df = read.table(paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/rpkm.txt"))
 
-## DESeq2 manual here:
-## http://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
-
-## confirm info row order is same as fc$counts column order
-rownames(info) = info$file_name
-all(rownames(info) == colnames(fc$counts))
-
-dds = DESeqDataSetFromMatrix(countData = fc$counts,
-                             colData = info,
-                             design = ~ Cell_type + Method + gender) # Cell_type + Method + gender
-dds
-
-## recommended filtering from DESeq2 manual: keep = rowSums(counts(dds)) >= 10
-## filtering based on fragments per million
-keep = rowSums(fpm(dds) > 1) >= 2 ## DESeq2 also has fpkm
-sum(keep) ## how many genes are we keeping, ~ 30k for nuclear, 34k for wc, 12k for ribo
-dds = dds[keep,]
-
-## possibly collapseReplicates to combine counts from technical replicates
-
-## running DE
-dds = DESeq(dds)
-## which contrasts are we running
-resultsNames(dds)
-saveRDS(dds, "d1_d2_rnaseq/expression_data_fc/all/deseq2.RDS")
-
-res = results(dds, name = "Cell_type_D2_vs_D1")
-res
-
-## shrink results
-resLFC = lfcShrink(dds, coef=2)
-resLFC
-
-## look at D1 and D2
-drd1 = "ENSMUSG00000021478"
-drd2 = "ENSMUSG00000032259"
-res[c(drd1, drd2), ]
-resLFC[c(drd1, drd2), ]
-
-## adjusted p-values were less than 0.05. 
-## 14k genes that are DE for nuclear?? Only 612 for WC (which makes more sense..)
-## 1k for riboseq
-sum(resLFC$padj < 0.05, na.rm=TRUE)
-summary(res)
-
-## plots
-plotMA(resLFC, ylim=c(-2,2)) ## 
-
-# identify outliers
-res05 <- results(dds, alpha=0.05)
-summary(res05)
-
-## print DEG lists to file
-resOrdered = res[order(resLFC$padj),]
-resSig <- subset(resOrdered, padj < 0.05)
-resSig
-
-resSig %>% as.data.frame %>%
-  write_tsv(., paste0("d1_d2_rnaseq/de_tables/fc_deseq/", data_subset, "_d1_v_d2_2018_01_29.txt"))
-
-## plotting counts of single genes
-plotCounts(dds, gene=drd1, intgroup="Cell_type") ## Cell_type_D2_vs_D1
-
-##
-vsd = vst(dds, blind=FALSE)
-p_data = plotPCA(vsd, intgroup="Cell_type", returnData=TRUE)
-percentVar = round(100 * attr(p_data, "percentVar"), digits = 1)
-p = p_data %>% 
-  left_join(info %>% select(file_name, ID, gender, Method), by = c("name" = "file_name")) %>% 
-  ggplot(., aes(PC1, PC2, color=gender)) + ## gender Cell_type Method
-  geom_point() + ## size=3
-  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
-  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
-  # coord_fixed() +
-  # scale_color_manual(values = c("skyblue", "red3", "purple3")) + 
-  scale_color_manual(values =  c("blue", "grey")) + ##c("green3", "red")) + ##
-  # geom_text(aes(label = ID), col = "black", show.legend = FALSE, check_overlap = F, hjust = "inward") + 
-  theme_classic()
-p
-filename = paste0("d1_d2_rnaseq/figures/qc_fc/deseq2/", data_subset, "_pc1_pc2_gender_2018_01_29.png")
-## _pc1_pc2_gender.png _pc1_pc2_cell_type.png
-ggsave(filename, p, width = 4, height = 3, units = "in")
-
-#A histogram of p–values should always be plotted in order to check whether they have been computed correctly.
-hist(res$padj, col = "lavender",main = "D1 vs D2", xlab = "p-values")
-
-p_data %>% filter(PC1 > 15)
-## D1_D2_ribo.D2F4.sam: abnormal sample, D2 is completely missing and completely off on PCA
-## D1_D2_ribo.D1F3.sam: outlier on PCA
 ######################
 # One time use
 ######################
@@ -270,3 +188,10 @@ fc$counts[, filenames_to_add] %>% head
 # fc$counts %>% head
 # fc$counts %<>% cbind(., new_cts)
 # colnames(fc$counts)[16] = new_name
+
+
+# WC highest
+# filter(temp_df, (wc_rpkm > nuc_rpkm) & (wc_rpkm > ribo_rpkm))
+# 
+# # Higher in WC and Ribo compared to nuclear
+# filter(temp_df, (wc_rpkm > nuc_rpkm) & (ribo_rpkm > nuc_rpkm))
