@@ -22,34 +22,38 @@ home_dir = paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/")
 info = readRDS(paste0(home_dir, "info.RDS"))
 vobj = readRDS(paste0(home_dir, "vobj.RDS"))
 
+# remove female samples from analysis
+files_to_keep = info %>% filter(gender == "M") %>% select(file_name) %>% unlist %>% as.character
+vobj = vobj[, files_to_keep]
+info %<>% filter(file_name %in% files_to_keep)
 
-form = ~ (1|Method) + (1|Cell_type) + (1|gender)
-# (1|Blinded.ID) +  (1|Method) + 
+
+form = ~ (1|Method) + (1|Cell_type) # + (1|gender)
 
 ## variance partition
 # varPart = fitExtractVarPartModel(vobj, form, info)
-# saveRDS(varPart, "d1_d2_rnaseq/expression_data_fc/all/varpart.RDS")
-varPart = readRDS("d1_d2_rnaseq/expression_data_fc/all/varpart.RDS")
+# saveRDS(varPart, "d1_d2_rnaseq/expression_data_fc/all/varpart_noF.RDS")
+# varpart_noF.RDS  varpart.RDS
+varPart = readRDS("d1_d2_rnaseq/expression_data_fc/all/varpart_noF.RDS")
 
 ## print to file (first sort by descending for Method)
-sorted_vals = sort(varPart$Method, decreasing = T, index.return = T)$ix
+# sorted_vals = sort(varPart$Method, decreasing = T, index.return = T)$ix
+# out_df = sortCols(varPart[sorted_vals, ])
+# as.data.frame(out_df) %>% mutate(gene_ens_id = row.names(out_df)) %>% 
+#   select(gene_ens_id, everything()) %>% 
+#   write_tsv("d1_d2_rnaseq/figures/variance_partition_fc_2018_06_18/top_variance_genes_2018_06_18.txt")
 
-out_df = sortCols(varPart[sorted_vals, ])
-as.data.frame(out_df) %>% mutate(gene_ens_id = row.names(out_df)) %>% 
-  select(gene_ens_id, everything()) %>% 
-  write_tsv("d1_d2_rnaseq/figures/variance_partition_fc_2018_01_29/top_variance_genes_2018_02_21.txt")
-
-# colnames(varPart) = c("Cell type", "Gender", "Method", "Residuals")
+# colnames(varPart) = c("Cell type", "Method", "Residuals") # "Gender",
 # p = plotVarPart( sortCols(varPart), label.angle = 50)
-# p
-# ggsave(paste0("d1_d2_rnaseq/figures/variance_partition_fc_2018_01_29/var_explained.png"), p, width = 2.5, height = 3.25)
+# p 
+# ggsave(paste0("d1_d2_rnaseq/figures/variance_partition_fc_2018_06_18/var_explained.png"), 
+#        p, width = 2.5, height = 3.25)
 
 ## looking at D1 and D2 expression across all datasets
 drd1 = "ENSMUSG00000021478"
 drd2 = "ENSMUSG00000032259"
 xist = "ENSMUSG00000086503"
 uty = "ENSMUSG00000068457"
-
 
 
 i = which.max(varPart$Method)
@@ -115,7 +119,7 @@ color.map = colList[num_label]
 color_scale = colorpanel(100, "Blue", "Black", "Yellow")[c(1:25, 45:55, 75:100)]
 color_scale = c(rep(color_scale[[1]], 50), color_scale, rep(color_scale[[length(color_scale)]], 60))
 
-file_name = "d1_d2_rnaseq/figures/variance_partition_fc_2018_01_29/heatmap_cell_type.png"
+file_name = "d1_d2_rnaseq/figures/variance_partition_fc_2018_06_18/heatmap_cell_type.png"
 png(file_name, width = 6*300, height = 6*300, res = 300)
 p = heatmap.2(vobj$E[ens_gene_list,], # capped_expr, # 
           scale="row",
@@ -173,14 +177,16 @@ ens_gene_list = topVarGenes$ens_name
 
 ## label the x-axis covariate (e.g., Cell type, method)
 num_label = as.numeric(vobj$targets$Method) # Method Cell_type
-colList = c("purple3", "skyblue", "red3") # for method
+# colList = c("purple3", "skyblue", "red3") # for method
+colList = c("blue", "red", "black") # for method
+# order is: nuclear, ribo, wc
 color.map = colList[num_label]
 
 ## label the gene expression level
 color_scale = colorpanel(100, "Blue", "Black", "Yellow")[c(1:25, 45:55, 75:100)]
 color_scale = c(rep(color_scale[[1]], 30), color_scale, rep(color_scale[[length(color_scale)]], 40))
 
-file_name = "d1_d2_rnaseq/figures/variance_partition_fc_2018_01_29/heatmap_method.png"
+file_name = "d1_d2_rnaseq/figures/variance_partition_fc_2018_06_18/heatmap_method.png"
 png(file_name, width = 6*300, height = 6*300, res = 300)
 p = heatmap.2(vobj$E[ens_gene_list,], 
               scale="row",

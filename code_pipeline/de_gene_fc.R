@@ -15,7 +15,7 @@ p = c("limma", "edgeR",
 lapply(p, require, character.only = TRUE)
 
 ### set file names
-data_subset = "all" ## all nuclear wc ribo
+data_subset = "ribo" ## all nuclear wc ribo
 home_dir = paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/")
 x_loc = paste0(home_dir, "norm.RDS") ## _norm_lax.RDS _norm_strict.RDS
 info_loc = paste0(home_dir, "info.RDS")
@@ -27,7 +27,7 @@ x = readRDS(x_loc)
 info = readRDS(info_loc) 
 
 ## create model matrix
-design = model.matrix(~ Cell_type + Method + gender + 0, info) ## Cell_type + Method + gender
+design = model.matrix(~ Cell_type + 0, info) ## Cell_type + Method + gender
 
 ## estimate variance as function of mean expression
 vobj = voom(x, design, plot=TRUE)
@@ -59,7 +59,7 @@ topSet[drd2, ] ## nuclear D2 is not differentially expressed fit2[drd2, ]
 
 topSet %>% as.data.frame %>% 
   mutate(gene_id = row.names(topSet)) %>% 
-  write_tsv(., paste0("d1_d2_rnaseq/de_tables/fc_voom_limma/", data_subset, "_d1_v_d2_2018_01_29.txt"))
+  write_tsv(., paste0("d1_d2_rnaseq/de_tables/fc_voom_limma/", data_subset, "_d1_v_d2_2018_06_17.txt"))
 
 
 

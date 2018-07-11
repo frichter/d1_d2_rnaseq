@@ -107,10 +107,11 @@ stats_long %>% group_by(Status, Method) %>%
 # if applicable
 #############################
 
-data_subset = "nuclear" ## ribo nuclear wc all
+data_subset = "all" ## ribo nuclear wc all
 
 files_to_keep = info %>% 
-  filter(grepl(data_subset, Method)) %>% ## uncommend for nuclear wc ribo
+  # filter(grepl(data_subset, Method)) %>% ## uncomment for nuclear wc ribo
+  filter(gender == "M") %>% 
   ## remove the abnormal riboseq files: abnormal PCA, no DRD2, 82% of reads unassigned/unmapped
   filter(file_name != "D1_D2_ribo.D2F4.sam", 
          file_name != "D1_D2_ribo.D1F3.sam") %>% 
@@ -134,9 +135,11 @@ info %<>% filter(file_name %in% files_to_keep)
 info %<>% mutate_all(as.factor) %>% mutate_all(droplevels)
 info %>% group_by(Method, Cell_type, gender) %>% tally
 
-saveRDS(info, paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/info.RDS"))
+saveRDS(info, paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/info_noF.RDS"))
 
-saveRDS(fc, paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/fc_gene_from_exon.RDS"))
+saveRDS(fc, paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/fc_gene_from_exon_noF.RDS"))
+# fc_gene_from_exon.RDS fc_gene_from_all.RDS
+# fc_gene_from_exon_noF.RDS fc_gene_from_all_noF.RDS
 
 #############################
 # normalize counts with 
@@ -166,23 +169,23 @@ saveRDS(x, paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/norm.RDS"))
 write.table(rpkm(x), paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/rpkm.txt"),
             quote = F, sep = "\t")
 
-data_subset = "all"
-rpkm_df = read.table(paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/rpkm.txt"))
+# data_subset = "all"
+# rpkm_df = read.table(paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/rpkm.txt"))
 
 ######################
 # One time use
 ######################
 
 ## used separate counts matrices here
-cts_file_list = list.files("d1_d2_rnaseq/expression_data_fc/counts_matrices", "counts_.*.RDS", full.names = T)
-names(cts_file_list) = gsub(".*matrices/counts_", "", cts_file_list) %>% gsub("_17_11.RDS", "", .)
-cts_list = map(cts_file_list, readRDS)
-
-
-## are there any counts from same sample but different lanes? If yes then could add the counts
-filenames_to_add = info %>% group_by(Method, Cell_type, sample_replicate) %>%
-  mutate(n = n()) %>% ungroup %>% filter(n > 1) %>% select(file_name) %>% unlist %>% as.character
-fc$counts[, filenames_to_add] %>% head
+# cts_file_list = list.files("d1_d2_rnaseq/expression_data_fc/counts_matrices", "counts_.*.RDS", full.names = T)
+# names(cts_file_list) = gsub(".*matrices/counts_", "", cts_file_list) %>% gsub("_17_11.RDS", "", .)
+# cts_list = map(cts_file_list, readRDS)
+# 
+# 
+# ## are there any counts from same sample but different lanes? If yes then could add the counts
+# filenames_to_add = info %>% group_by(Method, Cell_type, sample_replicate) %>%
+#   mutate(n = n()) %>% ungroup %>% filter(n > 1) %>% select(file_name) %>% unlist %>% as.character
+# fc$counts[, filenames_to_add] %>% head
 # new_name = gsub("L00[5-8]", "Lx", filenames_to_add) %>% unique
 # new_cts = rowSums(fc$counts[, filenames_to_add])
 # fc$counts %>% head
