@@ -26,6 +26,12 @@ fit_loc = paste0(home_dir, "fit.RDS")
 x = readRDS(x_loc) 
 info = readRDS(info_loc) 
 
+## looking at the chromosomes that were captured:
+x$genes %>% select(Chr) %>% as.data.frame %>% unlist %>% as.character %>%
+  paste(collapse = ";") %>% strsplit(., ";") %>% unlist %>% unique
+# x$genes %>% filter(grepl("MT", Chr)) %>% tally
+## Looks like non-nuclear DNA https://www.ncbi.nlm.nih.gov/nuccore/JH584304.1
+
 ## create model matrix
 design = model.matrix(~ Cell_type + 0, info) ## Cell_type + Method + gender
 

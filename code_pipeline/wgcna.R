@@ -28,12 +28,12 @@ enableWGCNAThreads(6)
 #  load data/inputs
 #########################################
 
-parent_subset = "wc" ## all nuclear wc ribo
+parent_subset = "ribo_w_Female" ## all nuclear wc ribo ribo_w_Female
 home_dir = paste0("d1_d2_rnaseq/expression_data_fc/", parent_subset, "/")
 # results_prefix = paste0(home_dir, "wgcna/vobjE_")
 # vobj_scaled_noF_ vobjE_noF_
 
-data_subset = "wc" ## all nuclear wc ribo D1 D2 
+data_subset = "ribo_w_Female" ## all nuclear wc ribo D1 D2 ribo_w_Female
 # results_prefix = paste0("/sc/orga/projects/chdiTrios/Felix/D1_D2_rnaseq/wgcna/", data_subset, "_results/vobjE_")
 results_prefix = paste0("/sc/orga/projects/chdiTrios/Felix/D1_D2_rnaseq/wgcna/", data_subset, "_results/vst_")
 
@@ -51,19 +51,20 @@ if(grepl("^D", data_subset)) {
 }
 
 
-# prepare traits matrix # + gender
-datTraits = model.matrix( ~ Cell_type + Method + gender + 0, info) %>% as.data.frame %>% 
-  mutate(MethodNuc = as.numeric((Methodribo == 0) & (Methodwc == 0))) %>% 
+# prepare traits matrix # + gender Method
+datTraits = model.matrix( ~ Cell_type + gender + 0, info) %>% as.data.frame %>% 
+  mutate(MethodNuc = as.numeric((Methodribo == 0) & (Methodwc == 0))) %>%
   select(Cell_typeD1:Methodwc, MethodNuc) # genderM
+  # mutate(genderF = as.numeric(!genderM))
 
 datTraits = model.matrix( ~ Cell_type + 0, info) %>% as.data.frame
-# + gender + Method + Cell_type
+# + Method + Cell_type
 
 ## renaming:
 head(datTraits)
-names(datTraits) = c("D1 neurons ", "D2 neurons ") 
-# , "RiboTag ", "Whole cell ", "Nuclear ") # , "Sex (Male) ")
-names(datTraits) = c("Nuclear ", "RiboTag ", "Whole cell ") 
+names(datTraits) = c("D1 neurons ", "D2 neurons ", "Sex (Male) ", "Sex (Female) ") 
+# , "RiboTag ", "Whole cell ", "Nuclear ") # ) , "Sex (Male) "
+# names(datTraits) = c("Nuclear ", "RiboTag ", "Whole cell ") 
 head(datTraits)
 
 #############################################
@@ -88,7 +89,7 @@ rownames(datExpr) = colnames(vobj$E)
 #############################################
 
 # Using the DESeq2 input
-vsd = readRDS(paste0("d1_d2_rnaseq/expression_data_fc/", parent_subset, "/deseq2_vsd2018_04_23.RDS"))
+vsd = readRDS(paste0("d1_d2_rnaseq/expression_data_fc/", parent_subset, "/deseq2_from_all_vsd2018_07_12.RDS"))
 # deseq2_vsd2018_04_23.RDS deseq2_vsd2018_06_18.RDS
 ## only subset for D1 and D2 (other ones are already subset)
 if(grepl("^D", data_subset)) {
@@ -107,15 +108,15 @@ rownames(datExpr) = colnames(vsd)
 powers = c(c(1:10), seq(from = 12, to=30, by=2)) # , seq(from = 25, to=100, by=5)
 # Call the network topology analysis function
 sft = pickSoftThreshold(datExpr, powerVector = powers, networkType = "signed", verbose = 5)
-filename = paste0(results_prefix, "soft_thresholds_signed_18_06_18.pdf")
+filename = paste0(results_prefix, "soft_thresholds_signed_18_07_12.pdf")
 PlotSoftThreshold(sft, filename) 
 
 ################################################
 # one-step pure WGCNA (ie no coexpp library)
 ################################################
 
-beta_choice = 20
-# ribo: 7, nuclear: 20, wc: 20, all: 20
+beta_choice = 9
+# ribo: 9, nuclear: 18, wc: 14, all: 16 ribo_w_Female: 9
 wgcna_file_base = results_prefix %>% paste0(., "bicor_signed_beta", beta_choice, 
                                             "_min100_mergecutheight2neg2_static99_",
                                             "minKMEtoStay1neg2_pamF_")
@@ -139,8 +140,8 @@ net = blockwiseModules(datExpr, power = beta_choice,
                        verbose = 3)
 
 
-saveRDS(net, paste0(wgcna_file_base, "bwm_out_18_06_20.RDS"))
-net = readRDS(paste0(wgcna_file_base, "bwm_out_18_05_07.RDS")) 
+saveRDS(net, paste0(wgcna_file_base, "bwm_out_18_07_12.RDS"))
+net = readRDS(paste0(wgcna_file_base, "bwm_out_18_07_12.RDS")) 
 # bwm_out_18_05_05.RDS bwm_out_18_05_07.RDS bwm_out_18_06_18.RDS
 
 moduleLabels = net$colors
@@ -151,7 +152,7 @@ unique(moduleColors) %>% length
 
 # Plot the dendrogram and the module colors underneath
 # pdf(file = paste0(wgcna_file_base, "dendro_genes_min20_18_04_23.pdf"), width = 12, height = 9)
-pdf(file = paste0(wgcna_file_base, "dendro_genes_18_06_20.pdf"),
+pdf(file = paste0(wgcna_file_base, "dendro_genes_18_07_12.pdf"),
     width = 9, height = 4.5)
 plotDendroAndColors(net$dendrograms[[1]], moduleColors[net$blockGenes[[1]]],
                     "Module colors",
@@ -168,10 +169,11 @@ MEs = orderMEs(MEs0)
 color_scale = colorpanel(50, "Blue", "Black", "Yellow")
 # displayColors(color_scale)
 
-MET = orderMEs(cbind(MEs, datTraits)) ##  %>% select(-contains("neurons"))
+MET = orderMEs(cbind(MEs, datTraits)) %>% select(-contains("neurons"))
+## for no traits, use:
 # MET = orderMEs(MEs)
-filename = paste0(wgcna_file_base, "eigengene_dendro_18_06_20.pdf")
-# eigengene_dendro_NOTRAITS_18_06_18.pdf eigengene_dendro_18_06_18.pdf
+filename = paste0(wgcna_file_base, "eigengene_dendro_MFonly_18_08_09.pdf")
+#  eigengene_dendro_18_06_18.pdf eigengene_dendro_NOTRAITS_18_06_18.pdf
 pdf(file = filename, width = 6, height = 6)
 # Plot the relationships among the eigengenes and the trait 
 # Plot the dendrogram
@@ -191,14 +193,14 @@ plotEigengeneNetworks(MET, "Eigengene adjacency heatmap",
 dev.off()
 
 # plot heatmap relationship between modules and traits
-filename = paste0(wgcna_file_base, "trait_module_18_06_20.pdf")
+filename = paste0(wgcna_file_base, "trait_module_18_07_12.pdf")
 moduleTraitCor = plotTraitModule(datExpr, moduleColors, datTraits, filename, color_scale)
 
 # sending gene modules to files
 
 trait_interest = "D1 neurons " # "Nuclear " # 
 # Cell_typeD2 Cell_typeD1 genderM Methodnuclear Methodribo Methodwc
-filename = paste0(wgcna_file_base, "GS_MM_18_06_20.csv")
+filename = paste0(wgcna_file_base, "GS_MM_18_07_12.csv")
 createGSMMTable(datExpr, moduleColors, datTraits, trait_interest, filename)
 
 

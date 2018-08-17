@@ -20,8 +20,8 @@ lapply(p, require, character.only = TRUE)
 # Load data
 #############################
 
-data_subset = "all" ## ribo nuclear wc all
-data_source = "exon" ## exon all
+data_subset = "all" ## ribo nuclear wc all ribo_w_Female
+data_source = "all" ## exon all
 
 ## load count matrix  (from count_to_norm_fc.R)
 fc = readRDS(paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/fc_gene_from_", 
@@ -52,7 +52,7 @@ all(rownames(info) == colnames(fc$counts))
 
 dds = DESeqDataSetFromMatrix(countData = fc$counts,
                              colData = info,
-                             design = ~ Cell_type) # Cell_type + Method + gender
+                             design = ~ Cell_type + Method) # Cell_type + Method + gender
 dds
 
 ## recommended filtering from DESeq2 manual: keep = rowSums(counts(dds)) >= 10
@@ -70,11 +70,16 @@ dds = DESeq(dds)
 resultsNames(dds)
 saveRDS(dds, paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/deseq2_gene_from_",
                     data_source, ".RDS"))
-# deseq2_gene_from_exon.RDS deseq2_gene_from_all.RDS
 
 # data_subset = "ribo" ## ribo nuclear wc all
-# dds = readRDS(paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/deseq2_gene_from_all.RDS"))
-# deseq2_gene_from_exon.RDS deseq2_gene_from_all.RDS
+dds = readRDS(paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/deseq2_gene_from_",
+                     data_source, ".RDS"))
+
+## nonstandard chromosomes
+# nonstd_chrom_genes = fc$annotation %>% filter(grepl("GL|JH|MT", Chr)) %>% 
+#   dplyr::select(GeneID) %>% 
+#   filter(GeneID %in% row.names(dds)) %>% 
+#   unlist %>% as.character
 
 res = results(dds, name = "Cell_type_D2_vs_D1")
 res
@@ -108,12 +113,12 @@ resSig <- subset(resOrdered, padj < 0.05)
 resSig
 
 # resSig %>%
-# resOrdered %>% 
-#   as.data.frame %>% 
-#   mutate(gene_ens = row.names(resOrdered)) %>% 
-#   select(gene_ens, everything()) %>% 
-#   write_tsv(., paste0("d1_d2_rnaseq/de_tables/fc_deseq/", data_subset, 
-#                       "_d1_v_d2_gene_from_", data_source, "_2018_06_18.txt"))
+resOrdered %>%
+  as.data.frame %>%
+  mutate(gene_ens = row.names(resOrdered)) %>%
+  select(gene_ens, everything()) %>%
+  write_tsv(., paste0("d1_d2_rnaseq/de_tables/fc_deseq/", data_subset,
+                      "_d1_v_d2_gene_from_", data_source, "_2018_07_12.txt"))
 # _d1_v_d2_gene_from_all_2018_05_05.txt _d1_v_d2_gene_from_exon_2018_05_05.txt
 
 ## plotting counts of single genes
@@ -122,7 +127,7 @@ plotCounts(dds, gene=drd1, intgroup="Cell_type") ## Cell_type_D2_vs_D1
 ##
 vsd = vst(dds, blind=FALSE)
 # DESeq2 is obnoxious and makes you modify the plotPCA function to get PCs beyond 1 and 2
-p_data = plotPCA(vsd, intgroup="Cell_type", returnData=TRUE)
+p_data = plotPCA(vsd, intgroup="Method", returnData=TRUE)
 ### gender Cell_type Method
 percentVar = round(100 * attr(p_data, "percentVar"), digits = 1)
 p = p_data %>%
@@ -132,13 +137,13 @@ p = p_data %>%
   # coord_fixed() +
   ### order is: nuclear, ribo, wc
   # scale_color_manual(values = c("royalblue", "red", "black")) + ## c("skyblue", "red3", "purple3")
-  scale_color_manual(values =  c("green3", "red")) + ##c("blue", "grey")) + ##
+  # scale_color_manual(values =  c("green3", "red")) + ##c("blue", "grey")) + ##
   # geom_text(aes(label = group), col = "black", show.legend = FALSE, check_overlap = F, hjust = "inward") +
   theme_classic()
 p
 
 filename = paste0("d1_d2_rnaseq/figures/qc_fc/deseq2/", data_subset, 
-                  "_from_", data_source, "_pc1_pc2_cell_type_2018_07_11.png")
+                  "_from_", data_source, "_pc1_pc2_gender_2018_07_12.svg")
 ## _pc1_pc2_gender.png _pc1_pc2_cell_type.png _pc1_pc2_method_2018_06_23.png
 ggsave(filename, p, width = 3.5, height = 2.5, units = "in")
 
@@ -175,7 +180,8 @@ dds = dds[keep,]
 # vsd = vst(dds, blind=TRUE)
 
 vsd = varianceStabilizingTransformation(dds, blind=TRUE)
-saveRDS(assay(vsd), paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/deseq2_vsd2018_06_18.RDS"))
+saveRDS(assay(vsd), paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/deseq2_from_", 
+                           data_source, "_vsd2018_07_12.RDS"))
 
 # vsd = varianceStabilizingTransformation(dds, blind=TRUE, fitType="parametric")
 # vst is a wrapper around varianceStabilizingTransformation where  blind=FALSE

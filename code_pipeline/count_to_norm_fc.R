@@ -25,7 +25,7 @@ lapply(p, require, character.only = TRUE)
 #############################
 
 ## load count matrix
-fc = readRDS("d1_d2_rnaseq/expression_data_fc/counts_matrices/counts_gene_fromExons_17_12_06.RDS")
+fc = readRDS("d1_d2_rnaseq/expression_data_fc/counts_matrices/counts_all_17_12_06.RDS")
 ## gene counts from reads mapping to only exons: counts_gene_fromExons_17_12_06.RDS
 ## gene counts from reads mapping to introns and exons: counts_all_17_12_06.RDS
 
@@ -107,11 +107,11 @@ stats_long %>% group_by(Status, Method) %>%
 # if applicable
 #############################
 
-data_subset = "all" ## ribo nuclear wc all
+data_subset = "all" ## ribo nuclear wc all ribo_w_Female
 
 files_to_keep = info %>% 
-  # filter(grepl(data_subset, Method)) %>% ## uncomment for nuclear wc ribo
-  filter(gender == "M") %>% 
+  # filter(grepl(gsub("_w_Female", "", data_subset), Method)) %>% ## uncomment for nuclear wc ribo
+  filter(gender == "M") %>%
   ## remove the abnormal riboseq files: abnormal PCA, no DRD2, 82% of reads unassigned/unmapped
   filter(file_name != "D1_D2_ribo.D2F4.sam", 
          file_name != "D1_D2_ribo.D1F3.sam") %>% 
@@ -135,9 +135,9 @@ info %<>% filter(file_name %in% files_to_keep)
 info %<>% mutate_all(as.factor) %>% mutate_all(droplevels)
 info %>% group_by(Method, Cell_type, gender) %>% tally
 
-saveRDS(info, paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/info_noF.RDS"))
+saveRDS(info, paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/info.RDS"))
 
-saveRDS(fc, paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/fc_gene_from_exon_noF.RDS"))
+saveRDS(fc, paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/fc_gene_from_all.RDS"))
 # fc_gene_from_exon.RDS fc_gene_from_all.RDS
 # fc_gene_from_exon_noF.RDS fc_gene_from_all_noF.RDS
 
@@ -160,13 +160,14 @@ x = x[isexpr,]
 x = calcNormFactors(x)
 
 ## save count data
-saveRDS(x, paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/norm.RDS"))
+saveRDS(x, paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/norm_from_all_2018_07_23.RDS"))
 ## all_norm_strict.RDS all_norm_lax.RDS
 
 ## convert normalized data to RPKM and save as txt matrix
 # x = readRDS(paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/norm.RDS"))
+# x[1:5, 1:5]
 # rpkm(x)[1:5, 1:5]
-write.table(rpkm(x), paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/rpkm.txt"),
+write.table(rpkm(x), paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/rpkm_from_all_2018_07_23.txt"),
             quote = F, sep = "\t")
 
 # data_subset = "all"

@@ -26,7 +26,8 @@ PlotSoftThreshold = function(sft, filename) {
 }
 
 
-plotTraitModule = function(datExpr, geneModules, datTraits, filename, color_scale) {
+plotTraitModule = function(datExpr, geneModules, datTraits, filename, color_scale,
+                           width = 4, height = 6) {
   nGenes = ncol(datExpr)
   nSamples = nrow(datExpr)
   
@@ -41,7 +42,7 @@ plotTraitModule = function(datExpr, geneModules, datTraits, filename, color_scal
                       signif(moduleTraitPvalue, 1), ")", sep = "")
   dim(textMatrix) = dim(moduleTraitCor)
   
-  pdf(file = filename, width = 4, height = 6)
+  pdf(file = filename, width = width, height = height)
   par(mar = c(6, 8.5, 3, 3))
   # Display the correlation values within a heatmap plot
   labeledHeatmap(Matrix = moduleTraitCor,
