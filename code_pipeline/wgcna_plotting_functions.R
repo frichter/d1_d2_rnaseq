@@ -188,9 +188,9 @@ WrapperForCytoscapeExport = function(modules, datExpr, TOM, moduleColors, cytopr
   print(dim(modTOM))
   # Export the network into edge and node list files Cytoscape can read
   cyt = exportNetworkToCytoscape(modTOM,
-                                 edgeFile = paste0(cytoprefix, "cytoscape_modules/cs_edges_",
+                                 edgeFile = paste0(cytoprefix, "/cs_edges_",
                                                    paste(modules, collapse="-"), ".txt"),
-                                 nodeFile = paste0(cytoprefix, "cytoscape_modules/cs_nodes_",
+                                 nodeFile = paste0(cytoprefix, "/cs_nodes_",
                                                    paste(modules, collapse="-"), ".txt"),
                                  weighted = TRUE,
                                  threshold = 0.02,
