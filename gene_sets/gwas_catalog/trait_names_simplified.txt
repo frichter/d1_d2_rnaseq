@@ -1,0 +1,49 @@
+Trait_name	MAPPED_TRAIT	DISEASE.TRAIT
+Alzheimer's disease	Alzheimer's disease	Alzheimer's disease
+Alzheimer's disease	Alzheimer's disease	Alzheimer's disease (APOE e4 interaction)
+Alzheimer's disease	Alzheimer's disease	Alzheimer's disease (cognitive decline)
+Alzheimer's disease	Alzheimer's disease	Alzheimer's disease (late onset)
+Alzheimer's disease	Alzheimer's disease	Alzheimer's disease in APOE e4+ carriers
+Alzheimer's disease	Alzheimer's disease	Alzheimer's disease or family history of Alzheimer's disease
+Alzheimer's disease	Alzheimer's disease, age at onset	Alzheimer disease and age of onset
+Alzheimer's disease	Alzheimer's disease, amyloid-beta measurement	Alzheimer's disease biomarkers
+Alzheimer's disease	Alzheimer's disease, psychotic symptoms	Psychosis and Alzheimer's disease
+bipolar disorder	attention deficit hyperactivity disorder, bipolar disorder	Bipolar disorder (age of onset <21) or attention deficit hyperactivity disorder
+bipolar disorder	attention deficit hyperactivity disorder, bipolar disorder	Bipolar disorder or attention deficit hyperactivity disorder
+unipolar depression, schizophrenia, autism spectrum disorder, bipolar disorder	attention deficit hyperactivity disorder, unipolar depression, schizophrenia, autism spectrum disorder, bipolar disorder	Autism spectrum disorder, attention deficit-hyperactivity disorder, bipolar disorder, major depressive disorder, and schizophrenia (combined)
+autism spectrum disorder	autism	Autism
+autism spectrum disorder	autism spectrum disorder, behavior or behavioral disorder measurement	Restricted and repetitive behaviours in autism spectrum disorder
+bipolar disorder	behavior or behavioral disorder measurement, personality trait, bipolar disorder	Temperament (bipolar disorder)
+bipolar disorder	bipolar disorder	Bipolar disorder
+bipolar disorder	bipolar disorder, response to lithium ion	Objective response to lithium treatment
+extraversion	extraversion	Extraversion
+Alzheimer's disease	late-onset Alzheimers disease	Alzheimer's disease (late onset)
+neuroticism	neuroticism measurement	Neuroticism
+neuroticism	neuroticism measurement	Neuroticism (MTAG)
+Parkinson's disease	Parkinson's disease	Parkinson's disease
+Parkinson's disease	Parkinson's disease, age at onset	Parkinson's disease (familial, age at onset)
+bipolar disorder	personality trait	Personality traits in bipolar disorder
+schizophrenia	response to risperidone	Early response to risperidone in schizophrenia
+schizophrenia	schizophrenia	Schizophrenia
+schizophrenia, autism spectrum disorder	schizophrenia, autism spectrum disorder	Autism spectrum disorder or schizophrenia
+schizophrenia, bipolar disorder	schizophrenia, bipolar disorder	Schizophrenia or bipolar disorder
+schizophrenia, bipolar disorder	schizophrenia, bipolar disorder, response to lithium ion	Bipolar disorder lithium response (categorical) or schizophrenia
+schizophrenia, bipolar disorder	schizophrenia, bipolar disorder, response to lithium ion	Bipolar disorder lithium response (continuous) or schizophrenia
+schizophrenia, bipolar disorder	schizophrenia, bipolar disorder, schizoaffective disorder	Schizophrenia, schizoaffective disorder or bipolar disorder
+schizophrenia	schizophrenia, response to paliperidone, schizophrenia symptom severity measurement	Response to paliperidone in schizophrenia (CGI-S score)
+schizophrenia	schizophrenia, response to paliperidone, schizophrenia symptom severity measurement	Response to paliperidone in schizophrenia (negative Marder score)
+schizophrenia	schizophrenia, response to paliperidone, schizophrenia symptom severity measurement	Response to paliperidone in schizophrenia (PANSS score)
+schizophrenia	schizophrenia, response to paliperidone, schizophrenia symptom severity measurement	Response to paliperidone in schizophrenia (positive Marder score)
+unipolar depression	unipolar depression	Depression
+unipolar depression	unipolar depression	Depression (broad)
+unipolar depression	unipolar depression	Major depressive disorder
+unipolar depression	unipolar depression	Major depressive disorder (probable)
+unipolar depression	unipolar depression	Major depressive disorder (unexposed to adversity)
+unipolar depression	unipolar depression, alcohol dependence	Major depression and alcohol dependence
+unipolar depression, bipolar disorder	unipolar depression, bipolar disorder	Bipolar disorder or major depressive disorder (combined)
+unipolar depression	unipolar depression, depressive symptom measurement	Depression
+unipolar depression	unipolar depression, depressive symptom measurement	Depressive symptom measurement or major depressive disorder
+unipolar depression	unipolar depression, neuroticism measurement, response to selective serotonin reuptake inhibitor	Remission after SSRI treatment in MDD or neuroticism
+unipolar depression	unipolar depression, response to selective serotonin reuptake inhibitor	Response to serotonin reuptake inhibitors in major depressive disorder (plasma drug and metabolite levels)
+unipolar depression	unipolar depression, response to selective serotonin reuptake inhibitor	Response to serotonin reuptake inhibitors in non-psychotic unipolar depression
+Alzheimer's disease	NA	Family history of Alzheimer's disease

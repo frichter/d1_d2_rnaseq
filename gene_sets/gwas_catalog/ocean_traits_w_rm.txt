@@ -1,0 +1,11 @@
+MAPPED_TRAIT	DISEASE.TRAIT	LINK	Remove
+conscientiousness measurement, unipolar depression, response to selective serotonin reuptake inhibitor	Response to SSRI in MDD or conscientiouness	www.ncbi.nlm.nih.gov/pubmed/29559929	
+extraversion	Extraversion	www.ncbi.nlm.nih.gov/pubmed/27918536	
+neuroticism measurement	Neuroticism	www.ncbi.nlm.nih.gov/pubmed/25993607	
+neuroticism measurement	Neuroticism	www.ncbi.nlm.nih.gov/pubmed/27067015	
+neuroticism measurement	Neuroticism	www.ncbi.nlm.nih.gov/pubmed/27089181	
+neuroticism measurement	Neuroticism	www.ncbi.nlm.nih.gov/pubmed/27918536	
+neuroticism measurement	Neuroticism	www.ncbi.nlm.nih.gov/pubmed/29255261	
+neuroticism measurement	Neuroticism	www.ncbi.nlm.nih.gov/pubmed/29292387	
+neuroticism measurement	Neuroticism (MTAG)	www.ncbi.nlm.nih.gov/pubmed/29292387	
+unipolar depression, neuroticism measurement, response to selective serotonin reuptake inhibitor	Remission after SSRI treatment in MDD or neuroticism	www.ncbi.nlm.nih.gov/pubmed/29559929	

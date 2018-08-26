@@ -1,0 +1,162 @@
+MAPPED_TRAIT	DISEASE.TRAIT	LINK	Remove
+Alzheimer's disease	Alzheimer's disease (late onset)	www.ncbi.nlm.nih.gov/pubmed/17474819	
+Alzheimer's disease	Alzheimer's disease (late onset)	www.ncbi.nlm.nih.gov/pubmed/17553421	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/17975299	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/17998437	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/18823527	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/19125160	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/19734902	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/19734903	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/20061627	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/20460622	
+Alzheimer's disease	Alzheimer's disease (late onset)	www.ncbi.nlm.nih.gov/pubmed/20885792	
+Alzheimer's disease	Alzheimer's disease (late onset)	www.ncbi.nlm.nih.gov/pubmed/21390209	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/21460840	
+Alzheimer's disease	Alzheimer's disease (late onset)	www.ncbi.nlm.nih.gov/pubmed/21460841	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/21627779	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/22245343	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/22430674	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/22832961	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/23150908	
+Alzheimer's disease	Alzheimer's disease (cognitive decline)	www.ncbi.nlm.nih.gov/pubmed/23535033	
+Alzheimer's disease	Alzheimer's disease (late onset)	www.ncbi.nlm.nih.gov/pubmed/23565137	
+Alzheimer's disease	Alzheimer's disease (late onset)	www.ncbi.nlm.nih.gov/pubmed/23571587	
+Alzheimer's disease	Alzheimer's disease (late onset)	www.ncbi.nlm.nih.gov/pubmed/24162737	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/24755620	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/24770881	
+Alzheimer's disease	Alzheimer's disease in APOE e4- carriers	www.ncbi.nlm.nih.gov/pubmed/25778476	
+Alzheimer's disease	Alzheimer's disease in APOE e4+ carriers	www.ncbi.nlm.nih.gov/pubmed/25778476	
+Alzheimer's disease	Alzheimer's disease (late onset)	www.ncbi.nlm.nih.gov/pubmed/26339675	
+Alzheimer's disease	Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/28183528	
+Alzheimer's disease	Alzheimer's disease (APOE e4 interaction)	www.ncbi.nlm.nih.gov/pubmed/28183528	
+Alzheimer's disease	Alzheimer's disease in APOE e4- carriers	www.ncbi.nlm.nih.gov/pubmed/28183528	
+Alzheimer's disease	Alzheimer's disease or family history of Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/29777097	
+Alzheimer's disease, age at onset	Alzheimer's disease (age of onset)	www.ncbi.nlm.nih.gov/pubmed/22005931	
+Alzheimer's disease, age at onset	Alzheimer disease and age of onset	www.ncbi.nlm.nih.gov/pubmed/26830138	
+Alzheimer's disease, Alzheimer's disease biomarker measurement, CCL2 measurement	Cerebrospinal fluid levels of Alzheimer's disease-related proteins	www.ncbi.nlm.nih.gov/pubmed/25340798	X
+Alzheimer's disease, amyloid-beta measurement	Alzheimer's disease biomarkers	www.ncbi.nlm.nih.gov/pubmed/23419831	
+Alzheimer's disease, APOE carrier status	Alzheimer's disease (APOE e4 interaction)	www.ncbi.nlm.nih.gov/pubmed/25778476	
+Alzheimer's disease, beta-amyloid 1-42 measurement	Cerebrospinal AB1-42 levels in Alzheimer's disease dementia	www.ncbi.nlm.nih.gov/pubmed/25027320	X
+Alzheimer's disease, CCL4 measurement, Alzheimer's disease biomarker measurement	Cerebrospinal fluid levels of Alzheimer's disease-related proteins	www.ncbi.nlm.nih.gov/pubmed/25340798	X
+Alzheimer's disease, entorhinal cortical volume	Entorhinal cortical volume (Alzheimer's disease interaction)	www.ncbi.nlm.nih.gov/pubmed/21116278	X
+Alzheimer's disease, interleukin-6 measurement, Alzheimer's disease biomarker measurement	Cerebrospinal fluid levels of Alzheimer's disease-related proteins	www.ncbi.nlm.nih.gov/pubmed/25340798	X
+Alzheimer's disease, p-tau measurement	Alzheimer's disease biomarkers	www.ncbi.nlm.nih.gov/pubmed/23562540	X
+Alzheimer's disease, Posterior cortical atrophy	Posterior cortical atrophy and Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/26993346	X
+Alzheimer's disease, psychotic symptoms	Psychosis and Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/22005930	
+Alzheimer's disease, small vessel stroke	Alzheimer's disease or small vessel stroke	www.ncbi.nlm.nih.gov/pubmed/26913989	X
+Alzheimer's disease, t-tau measurement	Alzheimer's disease biomarkers	www.ncbi.nlm.nih.gov/pubmed/23562540	X
+angiotensin-converting enzyme measurement, Alzheimer's disease, Alzheimer's disease biomarker measurement	Cerebrospinal fluid levels of Alzheimer's disease-related proteins	www.ncbi.nlm.nih.gov/pubmed/25340798	
+attention deficit hyperactivity disorder, bipolar disorder	Bipolar disorder or attention deficit hyperactivity disorder	www.ncbi.nlm.nih.gov/pubmed/27890468	
+attention deficit hyperactivity disorder, bipolar disorder	Bipolar disorder (age of onset <21) or attention deficit hyperactivity disorder	www.ncbi.nlm.nih.gov/pubmed/27890468	
+attention deficit hyperactivity disorder, unipolar depression, schizophrenia, autism spectrum disorder, bipolar disorder	Autism spectrum disorder, attention deficit-hyperactivity disorder, bipolar disorder, major depressive disorder, and schizophrenia (combined)	www.ncbi.nlm.nih.gov/pubmed/23453885	
+autism	Autism	www.ncbi.nlm.nih.gov/pubmed/19404256	
+autism	Autism	www.ncbi.nlm.nih.gov/pubmed/20663923	
+autism	Autism	www.ncbi.nlm.nih.gov/pubmed/24189344	
+autism spectrum disorder, behavior or behavioral disorder measurement	Restricted and repetitive behaviours in autism spectrum disorder	www.ncbi.nlm.nih.gov/pubmed/28533516	
+behavior or behavioral disorder measurement, personality trait, bipolar disorder	Temperament (bipolar disorder)	www.ncbi.nlm.nih.gov/pubmed/22365631	
+beta-amyloid 1-42 measurement, cerebrospinal fluid biomarker measurement, Alzheimer's disease biomarker measurement	Cerebrospinal fluid AB1-42 levels	www.ncbi.nlm.nih.gov/pubmed/28247064	X
+binge eating, bipolar disorder	Binge eating behaviour in bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/29391396	X
+binge eating, bipolar disorder	Binge eating behaviour and bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/29391396	X
+bipolar disorder	Bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/17486107	
+bipolar disorder	Bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/18711365	
+bipolar disorder	Bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/21254220	
+bipolar disorder	Bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/21353194	
+bipolar disorder	Bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/21926972	
+bipolar disorder	Bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/22182935	
+bipolar disorder	Bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/22205951	
+bipolar disorder	Bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/24618891	
+bipolar disorder	Bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/27329760	
+bipolar disorder	Bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/28072414	
+bipolar disorder	Bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/28115744	
+bipolar disorder, body mass index	Bipolar disorder (body mass index interaction)	www.ncbi.nlm.nih.gov/pubmed/24322204	X
+bipolar disorder, response to lithium ion	Objective response to lithium treatment	www.ncbi.nlm.nih.gov/pubmed/26503763	
+bipolar disorder, response to lithium ion	Response to lithium treatment in bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/26806518	
+cerebrospinal fluid biomarker measurement, Alzheimer's disease biomarker measurement, t-tau measurement	Cerebrospinal T-tau levels	www.ncbi.nlm.nih.gov/pubmed/28247064	X
+conscientiousness measurement, unipolar depression, response to selective serotonin reuptake inhibitor	Response to SSRI in MDD or conscientiouness	www.ncbi.nlm.nih.gov/pubmed/29559929	
+dementia, Alzheimer's disease neuropathologic change	Dementia and core Alzheimer's disease neuropathologic changes	www.ncbi.nlm.nih.gov/pubmed/25188341	
+depressive episode measurement, bipolar disorder	Depressive episodes in bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/26297903	
+drug-induced agranulocytosis, treatment refractory schizophrenia, response to clozapine	Clozapine-induced agranulocytosis/granulocytopenia in treatment-resistant schizophrenia	www.ncbi.nlm.nih.gov/pubmed/26876947	X
+drug-induced agranulocytosis, treatment refractory schizophrenia, response to clozapine	Clozapine-induced agranulocytosis/granulocytopenia in treatment-resistant schizophrenia	www.ncbi.nlm.nih.gov/pubmed/27400856	X
+late-onset Alzheimers disease	Late-onset Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/27770636	
+late-onset Alzheimers disease	Alzheimer's disease (late onset)	www.ncbi.nlm.nih.gov/pubmed/28714976	
+manic episode measurement, depressive episode measurement, bipolar disorder	Depressive and manic episodes in bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/26297903	
+matrix metalloproteinase measurement, Alzheimer's disease, Alzheimer's disease biomarker measurement	Cerebrospinal fluid levels of Alzheimer's disease-related proteins	www.ncbi.nlm.nih.gov/pubmed/25340798	X
+mental or behavioural disorder	Bipolar disorder and schizophrenia	www.ncbi.nlm.nih.gov/pubmed/20889312	
+p-tau measurement, cerebrospinal fluid biomarker measurement, Alzheimer's disease biomarker measurement	Cerebrospinal P-tau181p levels	www.ncbi.nlm.nih.gov/pubmed/28247064	X
+Parkinson's disease	Parkinson's disease	www.ncbi.nlm.nih.gov/pubmed/19915575	
+Parkinson's disease	Parkinson's disease	www.ncbi.nlm.nih.gov/pubmed/19915576	
+Parkinson's disease	Parkinson's disease	www.ncbi.nlm.nih.gov/pubmed/20711177	
+Parkinson's disease	Parkinson's disease	www.ncbi.nlm.nih.gov/pubmed/21044948	
+Parkinson's disease	Parkinson's disease	www.ncbi.nlm.nih.gov/pubmed/21084426	
+Parkinson's disease	Parkinson's disease	www.ncbi.nlm.nih.gov/pubmed/21292315	
+Parkinson's disease	Parkinson's disease	www.ncbi.nlm.nih.gov/pubmed/21738487	
+Parkinson's disease	Parkinson's disease	www.ncbi.nlm.nih.gov/pubmed/22438815	
+Parkinson's disease	Parkinson's disease	www.ncbi.nlm.nih.gov/pubmed/22451204	
+Parkinson's disease	Parkinson's disease	www.ncbi.nlm.nih.gov/pubmed/24511991	
+Parkinson's disease	Parkinson's disease	www.ncbi.nlm.nih.gov/pubmed/24842889	
+Parkinson's disease	Parkinson's disease	www.ncbi.nlm.nih.gov/pubmed/25064009	
+Parkinson's disease	Parkinson's disease	www.ncbi.nlm.nih.gov/pubmed/27182965	
+Parkinson's disease	Parkinson's disease	www.ncbi.nlm.nih.gov/pubmed/28011712	
+Parkinson's disease	Parkinson's disease	www.ncbi.nlm.nih.gov/pubmed/28892059	
+Parkinson's disease, age at onset	Parkinson's disease (familial, age at onset)	www.ncbi.nlm.nih.gov/pubmed/27402877	
+personality trait	Personality traits in bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/21368711	
+response to risperidone	Early response to risperidone in schizophrenia	www.ncbi.nlm.nih.gov/pubmed/26856250	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/19571808	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/19571809	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/19571811	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/21926974	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/22037552	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/22037555	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/22688191	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/22883433	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/23142968	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/23894747	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/23974872	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/24043878	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/24253340	
+schizophrenia	Schizophrenia or bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/24280982	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/25056061	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/26198764	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/27922604	
+schizophrenia	Schizophrenia	www.ncbi.nlm.nih.gov/pubmed/28991256	
+schizophrenia, autism spectrum disorder	Autism spectrum disorder or schizophrenia	www.ncbi.nlm.nih.gov/pubmed/28540026	
+schizophrenia, bipolar disorder	Schizophrenia or bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/24280982	
+schizophrenia, bipolar disorder, response to lithium ion	Bipolar disorder lithium response (continuous) or schizophrenia	www.ncbi.nlm.nih.gov/pubmed/29121268	
+schizophrenia, bipolar disorder, response to lithium ion	Bipolar disorder lithium response (categorical) or schizophrenia	www.ncbi.nlm.nih.gov/pubmed/29121268	
+schizophrenia, bipolar disorder, schizoaffective disorder	Schizophrenia, schizoaffective disorder or bipolar disorder	www.ncbi.nlm.nih.gov/pubmed/24166486	
+schizophrenia, initial pursuit acceleration, bipolar disorder, schizoaffective disorder	Initial pursuit acceleration in psychotic disorders	www.ncbi.nlm.nih.gov/pubmed/29064472	X
+schizophrenia, mean fractional anisotropy measurement, white matter microstructure measurement	Total mean fractional anisotropy measurement in first episode schizophrenia	www.ncbi.nlm.nih.gov/pubmed/28924203	X
+schizophrenia, pursuit maintenance gain measurement, bipolar disorder, schizoaffective disorder	Pursuit maintenance gain in psychotic disorders	www.ncbi.nlm.nih.gov/pubmed/29064472	X
+schizophrenia, response to paliperidone, schizophrenia symptom severity measurement	Response to paliperidone in schizophrenia (CGI-S score)	www.ncbi.nlm.nih.gov/pubmed/27846195	
+schizophrenia, response to paliperidone, schizophrenia symptom severity measurement	Response to paliperidone in schizophrenia (positive Marder score)	www.ncbi.nlm.nih.gov/pubmed/27846195	
+schizophrenia, response to paliperidone, schizophrenia symptom severity measurement	Response to paliperidone in schizophrenia (negative Marder score)	www.ncbi.nlm.nih.gov/pubmed/27846195	
+schizophrenia, response to paliperidone, schizophrenia symptom severity measurement	Response to paliperidone in schizophrenia (PANSS score)	www.ncbi.nlm.nih.gov/pubmed/27846195	
+unipolar depression	Major depressive disorder	www.ncbi.nlm.nih.gov/pubmed/21521612	
+unipolar depression	Major depressive disorder	www.ncbi.nlm.nih.gov/pubmed/23377640	
+unipolar depression	Major depressive disorder	www.ncbi.nlm.nih.gov/pubmed/27479909	
+unipolar depression	Major depressive disorder	www.ncbi.nlm.nih.gov/pubmed/27519822	
+unipolar depression	Major depressive disorder	www.ncbi.nlm.nih.gov/pubmed/27777418	
+unipolar depression	Major depressive disorder	www.ncbi.nlm.nih.gov/pubmed/28540843	
+unipolar depression	Major depressive disorder	www.ncbi.nlm.nih.gov/pubmed/29317602	
+unipolar depression	Major depressive disorder (unexposed to adversity)	www.ncbi.nlm.nih.gov/pubmed/29495898	
+unipolar depression	Major depressive disorder (probable)	www.ncbi.nlm.nih.gov/pubmed/29662059	
+unipolar depression	Depression (broad)	www.ncbi.nlm.nih.gov/pubmed/29662059	
+unipolar depression	Depression	www.ncbi.nlm.nih.gov/pubmed/29700475	
+unipolar depression	Major depressive disorder	www.ncbi.nlm.nih.gov/pubmed/29728651	
+unipolar depression, alcohol dependence	Major depression and alcohol dependence	www.ncbi.nlm.nih.gov/pubmed/29071344	
+unipolar depression, bipolar disorder	Bipolar disorder or major depressive disorder (combined)	www.ncbi.nlm.nih.gov/pubmed/20351715	
+unipolar depression, depressive symptom measurement	Depression	www.ncbi.nlm.nih.gov/pubmed/27089181	
+unipolar depression, depressive symptom measurement	Depressive symptom measurement or major depressive disorder	www.ncbi.nlm.nih.gov/pubmed/28049566	
+unipolar depression, mental or behavioural disorder, bipolar disorder	Schizophrenia, bipolar disorder and depression (combined)	www.ncbi.nlm.nih.gov/pubmed/20713499	
+unipolar depression, neuroticism measurement, response to selective serotonin reuptake inhibitor	Remission after SSRI treatment in MDD or neuroticism	www.ncbi.nlm.nih.gov/pubmed/29559929	
+unipolar depression, response to bupropion, mood disorder	Response to bupropion in depression	www.ncbi.nlm.nih.gov/pubmed/27622933	
+unipolar depression, response to bupropion, mood disorder	Non-response to bupropion and depression	www.ncbi.nlm.nih.gov/pubmed/27622933	
+unipolar depression, response to placebo	Placebo response in major depressive disorder (% change in symptom score)	www.ncbi.nlm.nih.gov/pubmed/28696415	
+unipolar depression, response to selective serotonin reuptake inhibitor	Response to serotonin reuptake inhibitors in major depressive disorder (plasma drug and metabolite levels)	www.ncbi.nlm.nih.gov/pubmed/24528284	
+unipolar depression, response to selective serotonin reuptake inhibitor	Response to serotonin reuptake inhibitors in non-psychotic unipolar depression	www.ncbi.nlm.nih.gov/pubmed/26348319	
+unipolar depression, schizophrenia, bipolar disorder, concentration dose ratio, response to anticonvulsant	Pharmacokinetics of antiepileptic drugs in severe mental disorder (concentration drug ratio)	www.ncbi.nlm.nih.gov/pubmed/25944848	X
+unipolar depression, self rated health, stressful life event measurement	Major depressive disorder (stressful life events interaction)	www.ncbi.nlm.nih.gov/pubmed/26845276	
+Young adult-onset Parkinsonism	Early-onset Parkinson's disease	www.ncbi.nlm.nih.gov/pubmed/28256260	
+NA	Maternal history of Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/29777097	
+NA	Paternal history of Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/29777097	
+NA	Family history of Alzheimer's disease	www.ncbi.nlm.nih.gov/pubmed/29777097	
