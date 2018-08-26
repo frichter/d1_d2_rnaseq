@@ -2,25 +2,21 @@
 ## D1 and D2 nuclear and whole cell RNAseq analyses
 
 * code_pipeline
+    * aracne.R: script for ARACNE co-expression calculations and hub network filtering
+    * count_to_norm_fc.R and count_to_norm_functions.R: load counts data and process with TMM/voom/limma pipeline
+    * de_gene_fc.R: limma DE scripts
+    * deseq2_from_fc_2018_04_23.R: DESeq2 code and PCA plots
     * fastq_qc_align.py: python wrapper around alignment commands (and possibly also featurecounts if this needs heavy automating)
-    * count_to_norm.R and count_to_norm_functions.R
-        * load counts data: either HTSeq, which used an unknown GTF, or FeatureCounts, which used gencode.vM13.annotation.gtf.gz
-    * de_gene.R
     * featurecounts.R: load SAM information into a counts matrix using a reference GTF or one derived from the data
-    * pca_sex_check.R: standard QC
-* de_tables
-* expression_data_fc
-    * input, intermediate, and processed data for _FeatureCounts_
-    * counts_matrices: count matrices
-    * normalized_matrices_stringent: normalized matrix after filtering for mean(RPKM(gene)) >= 1
-* expression_data_htseq
-    * input, intermediate, and processed data for _HTSeq counts_
-* figures
+    * gene_set_enrichment_gwas.R: GWAS filtering and gene set enrichment scripts
+    * intron_pct_calc.R: calculate percent intron per gene
+    * module_posthoc_analyses.R: plot gene kME and trait correlations
+    * pca_cluster_stats.R: calculate Euclidean distance to assess relative tightness on PCA
+    * variance_partition.R: calculate variance partition
+    * varpart_pretty_plots.R: various custom plotting attempts for variance_partition.R output
+    * wgcna.R: run WGCNA and plot results
+    * wgcna_plotting_functions.R: functions for plotting WGCNA results
 * misc_scripts
     * One time or small analysis scripts that are not part of main pipelines. Might be incorporated into pipelines if they see heavy use
-    * drd1_drd2_expr.R: checks normalized expression of D1 and D2 receptor genes
-    * notes.R, notes.sh: log of activity in R and shell scripts
 * README.md
-    * This file.. :)
-* reference_data
-    * _gencode.vM13.annotation.gtf.gz:_ mouse reference annotation with multiple feature layers (e.g., gene, exon)
+    * This file
