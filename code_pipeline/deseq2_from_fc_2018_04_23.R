@@ -20,15 +20,13 @@ lapply(p, require, character.only = TRUE)
 # Load data
 #############################
 
-data_subset = "all" ## ribo nuclear wc all ribo_w_Female
+data_subset = "nuclear" ## ribo nuclear wc all ribo_w_Female
 data_source = "all" ## exon all
 
 ## load count matrix  (from count_to_norm_fc.R)
 fc = readRDS(paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/fc_gene_from_", 
                     data_source, ".RDS"))
 # fc_gene_from_all.RDS fc_gene_from_exon.RDS
-
-fc$counts %>% dim
 
 # fc$counts[1:5, 1:3]
 # fc_from_all$counts[1:5, 1:3]
@@ -43,6 +41,21 @@ rownames(info) = info$file_name
 all(rownames(info) == colnames(fc$counts))
 
 #############################
+# Split data by pct intron
+#############################
+
+pct_intron = read_tsv("d1_d2_rnaseq/de_tables/det_inconsistency_exploration/pct_intron.txt")
+
+intron_split = "low_intron_pct"
+# if(intron_split == "high_intron_pct")
+gene_subset = pct_intron %>% filter(Method == "nuclear") %>% 
+  filter(pct_intron < median(pct_intron)) %>% 
+  select(ens_gene) %>% unlist %>% as.character
+
+drd1 %in% gene_subset
+drd2 %in% gene_subset
+
+#############################
 # normalize counts with 
 # DESeq2
 #############################
@@ -52,7 +65,7 @@ all(rownames(info) == colnames(fc$counts))
 
 dds = DESeqDataSetFromMatrix(countData = fc$counts,
                              colData = info,
-                             design = ~ Cell_type + Method) # Cell_type + Method + gender
+                             design = ~ Cell_type) # Cell_type + Method + gender
 dds
 
 ## recommended filtering from DESeq2 manual: keep = rowSums(counts(dds)) >= 10
@@ -64,16 +77,21 @@ sum(keep)
 # For counts from exons: wc 39629, nuclear 38387, ribo 10545, all 
 dds = dds[keep,]
 
+## keeping only a subset based on intron pct
+dds = dds[row.names(dds) %in% gene_subset, ]
+
 ## running DE
 dds = DESeq(dds)
 ## which contrasts are we running
 resultsNames(dds)
 saveRDS(dds, paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/deseq2_gene_from_",
-                    data_source, ".RDS"))
+                    data_source,
+                    "_", intron_split,
+                    ".RDS"))
 
 # data_subset = "ribo" ## ribo nuclear wc all
-dds = readRDS(paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/deseq2_gene_from_",
-                     data_source, ".RDS"))
+# dds = readRDS(paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/deseq2_gene_from_",
+#                      data_source, ".RDS"))
 
 ## nonstandard chromosomes
 # nonstd_chrom_genes = fc$annotation %>% filter(grepl("GL|JH|MT", Chr)) %>% 
@@ -85,19 +103,21 @@ res = results(dds, name = "Cell_type_D2_vs_D1")
 res
 
 ## shrink results
-resLFC = lfcShrink(dds, coef=2)
-resLFC
+# resLFC = lfcShrink(dds, coef=2)
+# resLFC
 
 ## look at D1 and D2
 drd1 = "ENSMUSG00000021478"
 drd2 = "ENSMUSG00000032259"
 res[c(drd1, drd2), ]
-resLFC[c(drd1, drd2), ]
+# resLFC[c(drd1, drd2), ]
+
+res[drd1, ]
 
 ## adjusted p-values were less than 0.05. 
 ## 14k genes that are DE for nuclear?? Only 612 for WC (which makes more sense..)
 ## 1k for riboseq
-sum(resLFC$padj < 0.05, na.rm=TRUE)
+# sum(resLFC$padj < 0.05, na.rm=TRUE)
 summary(res)
 
 ## plots
@@ -118,7 +138,9 @@ resOrdered %>%
   mutate(gene_ens = row.names(resOrdered)) %>%
   select(gene_ens, everything()) %>%
   write_tsv(., paste0("d1_d2_rnaseq/de_tables/fc_deseq/", data_subset,
-                      "_d1_v_d2_gene_from_", data_source, "_2018_07_12.txt"))
+                      "_d1_v_d2_gene_from_", data_source,
+                      "_", intron_split, 
+                      "_2018_08_25.txt"))
 # _d1_v_d2_gene_from_all_2018_05_05.txt _d1_v_d2_gene_from_exon_2018_05_05.txt
 
 ## plotting counts of single genes

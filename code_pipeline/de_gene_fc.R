@@ -15,7 +15,7 @@ p = c("limma", "edgeR",
 lapply(p, require, character.only = TRUE)
 
 ### set file names
-data_subset = "ribo" ## all nuclear wc ribo
+data_subset = "nuclear" ## all nuclear wc ribo
 home_dir = paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/")
 x_loc = paste0(home_dir, "norm.RDS") ## _norm_lax.RDS _norm_strict.RDS
 info_loc = paste0(home_dir, "info.RDS")

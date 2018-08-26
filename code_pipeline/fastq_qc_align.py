@@ -38,21 +38,22 @@ class fq_pair(object):
         # create the sam file
         self.prefix = re.sub("_[ATCG]{6}", "", pair_file_loc)
         # go to home directory
-        self.home_dir = home_dir # "/sc/orga/projects/chdiTrios/Felix/D1_D2_rnaseq/"
+        self.home_dir = home_dir  # "/sc/orga/projects/chdiTrios/Felix/D1_D2_rnaseq/"
     def RunHISAT2(self):
         """ Run HISAT2. Manual:
             https://ccb.jhu.edu/software/hisat2/manual.shtml
         """
         # hisat2 index
-        self.hisat2_idx = hisat2_idx # "grcm38_snp_tran/genome_snp_tran"
-        ## confirm sam file isn't already made, then run hisat2
+        self.hisat2_idx = hisat2_idx  # "grcm38_snp_tran/genome_snp_tran"
+        # confirm sam file isn't already made, then run hisat2
         if not os.path.exists(self.prefix + ".sam"):
-            hisat2_cmd = ("time hisat2 --time -x %s -1 %s -2 %s -S %s.sam " + \
+            hisat2_cmd = ("time hisat2 --time -x %s -1 %s -2 %s -S %s.sam " +
                 "--un-conc %s_noPEalign -p 24") % \
                 (self.hisat2_idx, self.r1, self.r2, self.prefix, self.prefix)
             print(hisat2_cmd)
-            subprocess.call(hisat2_cmd, shell = True)
-        else: print(self.prefix + ".sam already made")
+            subprocess.call(hisat2_cmd, shell=True)
+        else:
+            print(self.prefix + ".sam already made")
         """
         other HISAT2 options to consider implementing
         trim 5' or 3' ends (--trim3 <int> and --trim5 <int>)
@@ -87,7 +88,7 @@ fq_i.RunHISAT2()
 home_dir = "/sc/orga/projects/chdiTrios/Felix/D1_D2_rnaseq/"
 hisat2_idx = "grcm38_snp_tran/genome_snp_tran"
 
-# if I loop will it wait for subprocess to finish before proceeding? Yes, looks like it
+# if I loop will it wait for subprocess to finish before proceeding? Yes
 # Want to loop since multi-threading the hisat2 command
 # D1_D2_nuclear D1_D2_whole_cell D1_D2_ribo
 fq_file_iter = glob.iglob(home_dir + "D1_D2_ribo/*.fastq.gz")

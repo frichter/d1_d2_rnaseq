@@ -11,7 +11,7 @@ setwd("/Users/felixrichter/Dropbox/PhD/")
 options(stringsAsFactors=FALSE)
 
 ## load external libraries (order matters)
-p = c("annotate", "org.Mm.eg.db", "gplots", "variancePartition",
+p = c("annotate", "org.Mm.eg.db", "gplots", "variancePartition", "limma",
       ## generic dataprocessing packages:
       "readr", "magrittr", "purrr", "dplyr", "ggplot2", "tidyr")
 lapply(p, require, character.only = TRUE)
@@ -36,7 +36,6 @@ design = model.matrix(~ Cell_type + Method + 0, info) ## Cell_type + Method + ge
 # saveRDS(vobj, vobj_loc)
 vobj = readRDS(vobj_loc)
 
-
 form = ~ (1|Method) + (1|Cell_type) # + (1|gender)
 
 ## variance partition
@@ -45,14 +44,16 @@ form = ~ (1|Method) + (1|Cell_type) # + (1|gender)
 varPart = readRDS(varpart_loc)
 
 ## print to file (first sort by descending for Method)
-# sorted_vals = sort(varPart$Method, decreasing = T, index.return = T)$ix
-# out_df = sortCols(varPart[sorted_vals, ])
-# as.data.frame(out_df) %>% mutate(gene_ens_id = row.names(out_df)) %>%
-#   select(gene_ens_id, everything()) %>%
-#   write_tsv("d1_d2_rnaseq/figures/variance_partition_fc_2018_07_23/top_variance_genes_2018_06_23.txt")
+sorted_vals = sort(varPart$Method, decreasing = T, index.return = T)$ix
+out_df = sortCols(varPart[sorted_vals, ])
+as.data.frame(out_df) %>% mutate(gene_ens_id = row.names(out_df)) %>%
+  select(gene_ens_id, everything()) %>%
+  filter(gene_ens_id %in% common_genes) %>% dim
+  write_tsv("d1_d2_rnaseq/figures/variance_partition_fc_2018_07_23/top_var_genes_in_all_3_methods_2018_08_24.txt")
+# top_variance_genes_2018_06_23.txt
 
 # colnames(varPart) = c("Cell type", "Method", "Residuals") # "Gender",
-# p = plotVarPart( sortCols(varPart), label.angle = 50)
+# p = plotVarPart( sortCols(varPart[common_genes, ]), label.angle = 50)
 # p
 # ggsave(paste0("d1_d2_rnaseq/figures/variance_partition_fc_2018_06_18/var_explained.svg"),
 #        p, width = 2.5, height = 3.25)
