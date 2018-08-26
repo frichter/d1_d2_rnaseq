@@ -16,7 +16,8 @@
     * varpart_pretty_plots.R: various custom plotting attempts for variance_partition.R output
     * wgcna.R: run WGCNA and plot results
     * wgcna_plotting_functions.R: functions for plotting WGCNA results
-* misc_scripts
-    * One time or small analysis scripts that are not part of main pipelines. Might be incorporated into pipelines if they see heavy use
+* gene_sets
+    * human_to_mouse_orthologues.txt: ENSEMBL - gene ID maps for human and mouse genes along with confidence
+    * gwas_catalog: intermediate and final files for selecting GWAS genes for enrichment tests
 * README.md
     * This file
