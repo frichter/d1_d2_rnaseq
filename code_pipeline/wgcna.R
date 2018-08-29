@@ -4,8 +4,8 @@
 # description: WGCNA
 ##############################################################
 
-# export TMP=/sc/orga/projects/chdiTrios/Felix/dna_rna/eqtl_wgs/fastqtl_2018_01/
-# module load R/3.3.1 ## use this minerva version for for coexpp ## R/3.4.1 ##
+# export TMP=/sc/orga/projects/chdiTrios/Felix/D1_D2_rnaseq/tmp_dir
+# module load R/3.5.1 ## R/3.3.1 ## use this minerva version for for coexpp ## R/3.4.1 ##
 # R
 
 ## set the home directory
@@ -28,42 +28,42 @@ enableWGCNAThreads(6)
 #  load data/inputs
 #########################################
 
-parent_subset = "ribo_w_Female" ## all nuclear wc ribo ribo_w_Female
+parent_subset = "nuclear" ## all nuclear wc ribo ribo_w_Female
 home_dir = paste0("d1_d2_rnaseq/expression_data_fc/", parent_subset, "/")
-# results_prefix = paste0(home_dir, "wgcna/vobjE_")
-# vobj_scaled_noF_ vobjE_noF_
-
-data_subset = "ribo_w_Female" ## all nuclear wc ribo D1 D2 ribo_w_Female
+data_subset = parent_subset ## "nuclear" ## all nuclear wc ribo D1 D2 ribo_w_Female
 # results_prefix = paste0("/sc/orga/projects/chdiTrios/Felix/D1_D2_rnaseq/wgcna/", data_subset, "_results/vobjE_")
 results_prefix = paste0("/sc/orga/projects/chdiTrios/Felix/D1_D2_rnaseq/wgcna/", data_subset, "_results/vst_")
+dir.create(paste0("/sc/orga/projects/chdiTrios/Felix/D1_D2_rnaseq/wgcna/", data_subset, "_results/"))
 
 info = readRDS(paste0(home_dir, "info.RDS"))
 
 # keep only a subset of samples (only need to run this for D1 and D2)
 if(grepl("^D", data_subset)) {
   samples_to_keep = info %>%
-    # filter(gender == "M") %>%
-    # filter(Method == data_subset) %>% ## disable for all
     filter(Cell_type == data_subset) %>%
     select(file_name) %>% unlist %>% as.character
   length(samples_to_keep)
   info %<>% filter(file_name %in% samples_to_keep)
 }
 
-
-# prepare traits matrix # + gender Method
-datTraits = model.matrix( ~ Cell_type + gender + 0, info) %>% as.data.frame %>% 
-  mutate(MethodNuc = as.numeric((Methodribo == 0) & (Methodwc == 0))) %>%
-  select(Cell_typeD1:Methodwc, MethodNuc) # genderM
-  # mutate(genderF = as.numeric(!genderM))
-
+# prepare traits matrix
 datTraits = model.matrix( ~ Cell_type + 0, info) %>% as.data.frame
 # + Method + Cell_type
 
+# for all or ribo_w_Female modify this:
+# + gender Method
+datTraits = model.matrix( ~ Cell_type + gender + 0, info) %>% as.data.frame %>% 
+  ## for all method
+  # mutate(MethodNuc = as.numeric((Methodribo == 0) & (Methodwc == 0))) %>%
+  # select(Cell_typeD1:Methodwc, MethodNuc) # genderM
+  ## for ribo w female
+  mutate(genderF = as.numeric(!genderM))
+
 ## renaming:
 head(datTraits)
-names(datTraits) = c("D1 neurons ", "D2 neurons ", "Sex (Male) ", "Sex (Female) ") 
-# , "RiboTag ", "Whole cell ", "Nuclear ") # ) , "Sex (Male) "
+names(datTraits) = c("D1 neurons ", "D2 neurons ") 
+# names(datTraits) = c("D1 neurons ", "D2 neurons ", "RiboTag ", "Whole cell ", "Nuclear ") 
+# names(datTraits) = c("D1 neurons ", "D2 neurons ", "Sex (Male) ", "Sex (Female) ")
 # names(datTraits) = c("Nuclear ", "RiboTag ", "Whole cell ") 
 head(datTraits)
 
@@ -89,12 +89,13 @@ rownames(datExpr) = colnames(vobj$E)
 #############################################
 
 # Using the DESeq2 input
-vsd = readRDS(paste0("d1_d2_rnaseq/expression_data_fc/", parent_subset, "/deseq2_from_all_vsd2018_07_12.RDS"))
+vsd = readRDS(paste0("d1_d2_rnaseq/expression_data_fc/", parent_subset,
+                     "/deseq2_from_all_vsd2018_08_28.RDS"))
 # deseq2_vsd2018_04_23.RDS deseq2_vsd2018_06_18.RDS
 ## only subset for D1 and D2 (other ones are already subset)
-if(grepl("^D", data_subset)) {
-  vsd = vsd[, samples_to_keep]
-}
+# if(grepl("^D", data_subset)) {
+#   vsd = vsd[, samples_to_keep]
+# }
 
 datExpr = as.matrix(t(vsd))
 colnames(datExpr) = rownames(vsd)
@@ -108,19 +109,21 @@ rownames(datExpr) = colnames(vsd)
 powers = c(c(1:10), seq(from = 12, to=30, by=2)) # , seq(from = 25, to=100, by=5)
 # Call the network topology analysis function
 sft = pickSoftThreshold(datExpr, powerVector = powers, networkType = "signed", verbose = 5)
-filename = paste0(results_prefix, "soft_thresholds_signed_18_07_12.pdf")
+filename = paste0(results_prefix, "soft_thresholds_signed_18_08_28.pdf")
 PlotSoftThreshold(sft, filename) 
 
 ################################################
 # one-step pure WGCNA (ie no coexpp library)
 ################################################
 
-beta_choice = 9
-# ribo: 9, nuclear: 18, wc: 14, all: 16 ribo_w_Female: 9
+beta_choice = 12
+# New: ribo: 9, nuclear: 12, wc: 18, all: 18, ribo_w_Female: 6 and same as ribo male only
+# OLD: ribo: 9, nuclear: 18, wc: 14, all: 16 ribo_w_Female: 9
 wgcna_file_base = results_prefix %>% paste0(., "bicor_signed_beta", beta_choice, 
                                             "_min100_mergecutheight2neg2_static99_",
-                                            "minKMEtoStay1neg2_pamF_")
-# max power for signed is 30..
+                                            "minKMEtoStay1neg2_pamT_")
+# max power for signed is 30, default beta for n<20 is 18 (FAQ 6)
+# https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/faq.html
 net = blockwiseModules(datExpr, power = beta_choice,
                        networkType = "signed",
                        TOMType = "signed", 
@@ -131,17 +134,17 @@ net = blockwiseModules(datExpr, power = beta_choice,
                        mergeCutHeight = 0.2, # (1 - correlation btw eigengenes) for merging modules
                        corType="bicor",
                        numericLabels = TRUE,
-                       pamStage = FALSE, 
+                       pamStage = TRUE, 
                        # this also greatly determines how "clean". Geschwind uses negative (probably means false)
                        # pamRespectsDendro = TRUE,
-                       maxBlockSize = 46300,
+                       maxBlockSize = 30000,
                        saveTOMs = TRUE,
                        saveTOMFileBase = wgcna_file_base,
                        verbose = 3)
 
 
-saveRDS(net, paste0(wgcna_file_base, "bwm_out_18_07_12.RDS"))
-net = readRDS(paste0(wgcna_file_base, "bwm_out_18_07_12.RDS")) 
+saveRDS(net, paste0(wgcna_file_base, "bwm_out_18_08_28.RDS"))
+# net = readRDS(paste0(wgcna_file_base, "bwm_out_18_07_12.RDS")) 
 # bwm_out_18_05_05.RDS bwm_out_18_05_07.RDS bwm_out_18_06_18.RDS
 
 moduleLabels = net$colors
@@ -152,7 +155,7 @@ unique(moduleColors) %>% length
 
 # Plot the dendrogram and the module colors underneath
 # pdf(file = paste0(wgcna_file_base, "dendro_genes_min20_18_04_23.pdf"), width = 12, height = 9)
-pdf(file = paste0(wgcna_file_base, "dendro_genes_18_07_12.pdf"),
+pdf(file = paste0(wgcna_file_base, "dendro_genes_18_08_28.pdf"),
     width = 9, height = 4.5)
 plotDendroAndColors(net$dendrograms[[1]], moduleColors[net$blockGenes[[1]]],
                     "Module colors",
@@ -169,11 +172,12 @@ MEs = orderMEs(MEs0)
 color_scale = colorpanel(50, "Blue", "Black", "Yellow")
 # displayColors(color_scale)
 
-MET = orderMEs(cbind(MEs, datTraits)) %>% select(-contains("neurons"))
+MET = orderMEs(cbind(MEs, datTraits)) #%>% select(-contains("neurons"))
 ## for no traits, use:
 # MET = orderMEs(MEs)
-filename = paste0(wgcna_file_base, "eigengene_dendro_MFonly_18_08_09.pdf")
-#  eigengene_dendro_18_06_18.pdf eigengene_dendro_NOTRAITS_18_06_18.pdf
+filename = paste0(wgcna_file_base, "eigengene_dendro_18_08_28.pdf")
+#  eigengene_dendro_18_08_28.pdf eigengene_dendro_NOTRAITS_18_08_28.pdf
+# eigengene_dendro_MFonly_18_08_28.pdf
 pdf(file = filename, width = 6, height = 6)
 # Plot the relationships among the eigengenes and the trait 
 # Plot the dendrogram
@@ -193,14 +197,14 @@ plotEigengeneNetworks(MET, "Eigengene adjacency heatmap",
 dev.off()
 
 # plot heatmap relationship between modules and traits
-filename = paste0(wgcna_file_base, "trait_module_18_07_12.pdf")
+filename = paste0(wgcna_file_base, "trait_module_18_08_28.pdf")
 moduleTraitCor = plotTraitModule(datExpr, moduleColors, datTraits, filename, color_scale)
 
 # sending gene modules to files
 
 trait_interest = "D1 neurons " # "Nuclear " # 
 # Cell_typeD2 Cell_typeD1 genderM Methodnuclear Methodribo Methodwc
-filename = paste0(wgcna_file_base, "GS_MM_18_07_12.csv")
+filename = paste0(wgcna_file_base, "GS_MM_18_08_28.csv")
 createGSMMTable(datExpr, moduleColors, datTraits, trait_interest, filename)
 
 
@@ -216,6 +220,8 @@ TOM = as.matrix(TOM)
 # modules = [[2]]
 ## remove vst_ from folder name
 cytoprefix = gsub("vst_", "", results_prefix)
+cytoprefix = paste0(cytoprefix, "cytoscape_modules_2018_08_29/")
+dir.create(cytoprefix)
 
 ## be sure to create a cytoscape_modules folder in the results folder
 walk(unique(moduleColors), WrapperForCytoscapeExport, datExpr, TOM, moduleColors, cytoprefix) 

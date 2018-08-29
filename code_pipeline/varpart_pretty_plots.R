@@ -17,19 +17,10 @@ p = c("annotate", "org.Mm.eg.db", "gplots", "variancePartition",
 lapply(p, require, character.only = TRUE)
 
 
-varPart = readRDS("d1_d2_rnaseq/expression_data_fc/all/varpart_from_all_2018_07_23.RDS")
+varPart = readRDS("d1_d2_rnaseq/expression_data_fc/all/varpart_from_all_2018_08_28_ONLY_3WAY_GENES.RDS")
 varPart = sortCols(varPart)
 
 colnames(varPart) = c("Method", "Cell type", "Residuals") # "Gender",
-
-
-## only keep genes in all 3 methods
-# method_vec = c("nuclear", "wc", "ribo")
-# method_i = method_vec[[1]]
-# kept_genes = map(method_vec, ~ readRDS(
-#   paste0("d1_d2_rnaseq/expression_data_fc/", .,
-#          "/deseq2_from_all_vsd2018_07_12.RDS")) %>% row.names)
-# common_genes = Reduce(intersect, kept_genes)
 
 varPart %<>% 
   mutate(gene_names = row.names(varPart)) %>% 
@@ -55,9 +46,9 @@ p = varPart %>%
   xlab("") + ylab("Variance Explained (%)") +
   theme_classic()
 p
-# ggsave("d1_d2_rnaseq/figures/variance_partition_fc_2018_07_23/var_explained_genes_in_all_3_methods.png",
-#        p, width = 3.75, height = 3.25)
-#  variance_partition_fc_2018_06_23
+ggsave("d1_d2_rnaseq/figures/variance_partition_2018_08_28/var_explained_ONLY_3WAY_GENES.png",
+       p, width = 3.75, height = 3.25)
+#  var_explained_genes_in_all_3_methods.png var_explained.png
 
 varPart %>% 
   # filter(gene_names %in% common_genes) %>% 

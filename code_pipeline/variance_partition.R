@@ -21,35 +21,39 @@ data_source = "all" ## exon all
 home_dir = paste0("d1_d2_rnaseq/expression_data_fc/", data_subset, "/")
 # gene_from_intron_and_exon/
 info = readRDS(paste0(home_dir, "info.RDS"))
-x = readRDS(paste0(home_dir, "/norm_from_", data_source, "_2018_07_23.RDS"))
-vobj_loc = paste0(home_dir, "/vobj_from_", data_source, "_2018_07_23.RDS")
-varpart_loc = paste0(home_dir, "/varpart_from_", data_source, "_2018_07_23.RDS")
+# x = readRDS(paste0(home_dir, "/norm_from_", data_source, "_2018_07_23.RDS"))
+# vobj_loc = paste0(home_dir, "/vobj_from_", data_source, "_2018_07_23.RDS")
+varpart_loc = paste0(home_dir, "/varpart_from_", data_source, "_2018_08_28.RDS")
 
 ## confirm only male
 info %>% group_by(gender) %>% tally
 
 ## create model matrix
-design = model.matrix(~ Cell_type + Method + 0, info) ## Cell_type + Method + gender
+# design = model.matrix(~ Cell_type + Method + 0, info) ## Cell_type + Method + gender
 
 ## estimate variance as function of mean expression
 # vobj = voom(x, design, plot=TRUE)
 # saveRDS(vobj, vobj_loc)
-vobj = readRDS(vobj_loc)
+# vobj = readRDS(vobj_loc)
+expr = readRDS("d1_d2_rnaseq/expression_data_fc/all/deseq2_from_all_vsd2018_08_28_ONLY_3WAY_GENES.RDS")
+# expr = readRDS("d1_d2_rnaseq/expression_data_fc/all/deseq2_from_all_quantlog_2018_08_28.RDS")
 
 form = ~ (1|Method) + (1|Cell_type) # + (1|gender)
 
 ## variance partition
-# varPart = fitExtractVarPartModel(vobj, form, info)
+# varPart = fitExtractVarPartModel(expr, form, info) ## vobj
+
 # saveRDS(varPart, varpart_loc)
+###
 varPart = readRDS(varpart_loc)
 
 ## print to file (first sort by descending for Method)
 sorted_vals = sort(varPart$Method, decreasing = T, index.return = T)$ix
 out_df = sortCols(varPart[sorted_vals, ])
 as.data.frame(out_df) %>% mutate(gene_ens_id = row.names(out_df)) %>%
-  select(gene_ens_id, everything()) %>%
-  filter(gene_ens_id %in% common_genes) %>% dim
-  write_tsv("d1_d2_rnaseq/figures/variance_partition_fc_2018_07_23/top_var_genes_in_all_3_methods_2018_08_24.txt")
+  select(gene_ens_id, everything()) %>% 
+  # filter(gene_ens_id %in% common_genes) %>% dim
+  write_tsv("d1_d2_rnaseq/figures/variance_partition_2018_08_28/top_var_genes_2018_08_28.txt")
 # top_variance_genes_2018_06_23.txt
 
 # colnames(varPart) = c("Cell type", "Method", "Residuals") # "Gender",

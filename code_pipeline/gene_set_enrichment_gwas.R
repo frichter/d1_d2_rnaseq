@@ -116,11 +116,11 @@ gwa_mouse_summary = gwa_mouse %>% select(Mouse.gene.name, Mouse.gene.stable.ID, 
 #############################################################################
 
 ## local directories:
-gs_mm_loc_all = "d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/all/vst_bicor_signed_beta16_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_07_12.csv"
-gs_mm_loc_nuc = "d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/nuclear/vst_bicor_signed_beta18_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_07_12.csv"
-gs_mm_loc_wc = "d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/wc/vst_bicor_signed_beta14_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_07_12.csv"
-gs_mm_loc_ribo = "d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/ribo/vst_bicor_signed_beta9_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_07_12.csv"
-gs_mm_loc_ribo_w_F = "d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/ribo_w_Female/vst_bicor_signed_beta9_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_07_12.csv"
+gs_mm_loc_all = "d1_d2_rnaseq/wgcna_from_all_2018_08_28/all_results/vst_bicor_signed_beta18_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_08_28.csv"
+gs_mm_loc_nuc = "d1_d2_rnaseq/wgcna_from_all_2018_08_28/nuclear_results/vst_bicor_signed_beta12_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_08_28.csv"
+gs_mm_loc_wc = "d1_d2_rnaseq/wgcna_from_all_2018_08_28/wc_results/vst_bicor_signed_beta18_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_08_28.csv"
+gs_mm_loc_ribo = "d1_d2_rnaseq/wgcna_from_all_2018_08_28/ribo_results/vst_bicor_signed_beta12_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_08_28.csv"
+gs_mm_loc_ribo_w_F = "d1_d2_rnaseq/wgcna_from_all_2018_08_28/ribo_w_Female_results/vst_bicor_signed_beta9_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_08_28.csv"
 
 gs_mm_loc_list = list(gs_mm_loc_all, gs_mm_loc_nuc, gs_mm_loc_wc, gs_mm_loc_ribo, gs_mm_loc_ribo_w_F)
 names(gs_mm_loc_list) = c("all", "nuclear", "wc", "ribo" , "ribo_w_Female")
@@ -135,6 +135,16 @@ hub_neighbor_file_list = list.files("d1_d2_rnaseq/manuscript/Supplementary mater
                                     full.names = T)
 names(hub_neighbor_file_list) = hub_neighbor_file_list %>% gsub(".*/|.txt", "", .)
 hub_n_nbrs = map_df(hub_neighbor_file_list, read_tsv, .id = "hub_source")
+
+## alt imports
+hub_neighbor_file_list = list.files("d1_d2_rnaseq/wgcna_from_all_2018_08_28/all_results/cytoscape_modules_2018_08_28",
+                                    "*_top20_hub_edges.txt",
+                                    full.names = T)
+names(hub_neighbor_file_list) = c("Method_whole cell", "rm", "Method_nuclear", "rm", "rm",
+                                  "Method_RiboTag", "Method_nuclear", "Method_RiboTag")
+hub_n_nbrs = map_df(hub_neighbor_file_list, read_tsv, .id = "hub_source")
+hub_n_nbrs %<>% filter(hub_source != "rm")
+hub_n_nbrs %>% filter()
 
 #############################################################################
 # compare GWAS hits of hub genes and neighbors
@@ -175,6 +185,8 @@ enrich_per_trait = function(trait_i, gene_mm_gs, gwa_mouse_summary, hub_nbr_fec)
 
 enrich_per_experiment = function(exp_source, data_subset, hub_n_nbrs, trait_list, 
                                  gene_mm_gs, gwa_mouse_summary) {
+  # exp_source = "Method_nuclear"
+  # data_subset = "all"
   print(exp_source)
   print(data_subset)
   ## pick the relevant GS/MM data frame
@@ -199,21 +211,23 @@ trait_list = c("all" = "", trait_list)
 
 exper_list = hub_n_nbrs$hub_source %>% unique
 # Method_nuclear Method_RiboTag Method_whole cell
-exper_list = c("Method", exper_list)
+# exper_list = c("Method", exper_list)
 names(exper_list) = exper_list
 
 ## use the appropriate data so you have the correct background list
 data_subset_list = c(rep("all", 4), rep("nuclear", 2), rep("ribo", 2), 
                      rep("ribo_w_Female", 2), rep("wc", 2))
+data_subset_list = rep("all", 3)
 
 ## calculate enrichment
 expr_trait_enrich = map2_df(exper_list, data_subset_list, enrich_per_experiment, 
                             hub_n_nbrs, trait_list,
                             gene_mm_gs, gwa_mouse_summary, .id = "experiment")
 
+
 ## write to file
-# expr_trait_enrich %>% 
-#   # filter(fet_p < 0.05) %>% as.data.frame
+expr_trait_enrich %>%
+  filter(fet_p < 0.05) %>% as.data.frame
 #   write_tsv("d1_d2_rnaseq/gene_sets/gwas_catalog/gwas_hit_enrichment.txt")
 
 ## plot enrichment

@@ -5,8 +5,8 @@
 # description: Run aracne
 ##############################################################
 
-# export TMP=/sc/orga/projects/chdiTrios/Felix/dna_rna/eqtl_wgs/fastqtl_2018_01/
-# module load R/3.3.1 ## use this minerva version for for coexpp ## R/3.4.1 ##
+# export TMP=/sc/orga/projects/chdiTrios/Felix/D1_D2_rnaseq/tmp_dir
+# module load R/3.5.1 ## use this minerva version for for coexpp ## R/3.4.1 ##
 # R
 
 ## set the home directory
@@ -23,24 +23,24 @@ p = c("limma", "edgeR", "annotate", "org.Mm.eg.db", "DESeq2", "minet", "topGO", 
 lapply(p, require, character.only = TRUE)
 
 
-data_subset = "ribo_w_Female" ## all nuclear wc ribo ribo_w_Female
+data_subset = "nuclear" ## all nuclear wc ribo ribo_w_Female
 ## load module results
 wgcna_dir = paste0("/sc/orga/projects/chdiTrios/Felix/D1_D2_rnaseq/wgcna/", 
-                   data_subset, "_results/cytoscape_modules")
-wgcna_dir = paste0("d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/",
-                   data_subset, "/cytoscape_modules")
+                   data_subset, "_results/cytoscape_modules_2018_08_29")
+wgcna_dir = paste0("d1_d2_rnaseq/wgcna_from_all_2018_08_28/",
+                   data_subset, "_results/cytoscape_modules_2018_08_28")
 module_list = list.files(wgcna_dir, "cs_edges.*txt", full.names = T)
 
 ### load same expression data used for WGCNA
 vsd = readRDS(paste0("d1_d2_rnaseq/expression_data_fc/", data_subset,
-                     "/deseq2_from_all_vsd2018_07_12.RDS"))
+                     "/deseq2_from_all_vsd2018_08_28.RDS"))
 
 # which files correspond the blue/salmon modules
 module_color = "grey" # blue brown grey turquoise
 grep(paste0("_", module_color, ".txt"), module_list)
 
 ### running ARACNE on the WGCNA edges
-module_i = module_list[[5]]
+# module_i = module_list[[5]]
 
 Generate_aracne_module = function(module_i, vsd, wgcna_dir) {
   module_color = gsub(".*_edges_", "", module_i) %>% gsub(".txt", "", .)
@@ -52,6 +52,12 @@ Generate_aracne_module = function(module_i, vsd, wgcna_dir) {
     return(module_color)
   }
   
+  ## if skipping any modules:
+  # mods_to_skip = c("grey")
+  # if(module_color %in% mods_to_skip) {
+  #   print(paste(module_color, "skipping"))
+  #   return(module_color)
+  # }
 
   wgcna_network = read_tsv(module_i)
   ## for large modules, read nodes instead of WGCNA network!!
@@ -128,21 +134,29 @@ map(module_list, Generate_aracne_module, vsd, wgcna_dir)
 #############################
 
 ## local directories:
-gs_mm_loc_all = "d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/all/vst_bicor_signed_beta16_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_07_12.csv"
-gs_mm_loc_nuc = "d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/nuclear/vst_bicor_signed_beta18_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_07_12.csv"
-gs_mm_loc_wc = "d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/wc/vst_bicor_signed_beta14_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_07_12.csv"
-gs_mm_loc_ribo = "d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/ribo/vst_bicor_signed_beta9_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_07_12.csv"
-gs_mm_loc_ribo_w_F = "d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/ribo_w_Female/vst_bicor_signed_beta9_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_07_12.csv"
+# gs_mm_loc_all = "d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/all/vst_bicor_signed_beta16_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_07_12.csv"
+# gs_mm_loc_nuc = "d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/nuclear/vst_bicor_signed_beta18_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_07_12.csv"
+# gs_mm_loc_wc = "d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/wc/vst_bicor_signed_beta14_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_07_12.csv"
+# gs_mm_loc_ribo = "d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/ribo/vst_bicor_signed_beta9_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_07_12.csv"
+# gs_mm_loc_ribo_w_F = "d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/ribo_w_Female/vst_bicor_signed_beta9_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_07_12.csv"
+
+gs_mm_loc_all = "d1_d2_rnaseq/wgcna_from_all_2018_08_28/all_results/vst_bicor_signed_beta18_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_08_28.csv"
+gs_mm_loc_nuc = "d1_d2_rnaseq/wgcna_from_all_2018_08_28/nuclear_results_pamT/vst_bicor_signed_beta12_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamT_GS_MM_18_08_28.csv"
+gs_mm_loc_wc = "d1_d2_rnaseq/wgcna_from_all_2018_08_28/wc_results/vst_bicor_signed_beta18_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_08_28.csv"
+gs_mm_loc_ribo = "d1_d2_rnaseq/wgcna_from_all_2018_08_28/ribo_results/vst_bicor_signed_beta12_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_08_28.csv"
+gs_mm_loc_ribo_w_F = "d1_d2_rnaseq/wgcna_from_all_2018_08_28/ribo_w_Female_results/vst_bicor_signed_beta9_min100_mergecutheight2neg2_static99_minKMEtoStay1neg2_pamF_GS_MM_18_08_28.csv"
 
 gs_mm_loc_list = list(gs_mm_loc_all, gs_mm_loc_nuc, gs_mm_loc_wc, gs_mm_loc_ribo, gs_mm_loc_ribo_w_F)
 names(gs_mm_loc_list) = c("all", "nuclear", "wc", "ribo" , "ribo_w_Female")
 
-data_subset = "ribo_w_Female"
+data_subset = "nuclear"
 gene_mm_gs = read_csv(gs_mm_loc_list[[data_subset]])
 
 gene_mm_gs %<>% select(-X1)
 
 ## add _ to end so you can match to end of line
+names(gene_mm_gs)[1:13] 
+# 7 for within method, 13 for all
 names(gene_mm_gs)[7:ncol(gene_mm_gs)] = paste0(names(gene_mm_gs)[7:ncol(gene_mm_gs)], "_")
 
 # module_color_i = module_list[[1]]
@@ -150,13 +164,19 @@ names(gene_mm_gs)[7:ncol(gene_mm_gs)] = paste0(names(gene_mm_gs)[7:ncol(gene_mm_
 get_edges_for_t20_nodes = function(module_color_i, gene_mm_gs, data_subset) {
   print(module_color_i)
   ## file locations
-  aracne_mod_loc = paste0("d1_d2_rnaseq/figures/wgcna_from_all_2018_07_12/",
-                          data_subset, "/cytoscape_modules/aracne_", module_color_i, ".txt")
+  aracne_mod_loc = paste0("d1_d2_rnaseq/wgcna_from_all_2018_08_28/",
+                          data_subset, "_results_PamT/cytoscape_modules_2018_08_29/aracne_", module_color_i, ".txt")
   edges_for_t20_hub_out_file = gsub(".txt$", "_top20_hub_edges.txt", aracne_mod_loc)
   if(file.exists(edges_for_t20_hub_out_file)) {
     print(paste(module_color_i, "already got edges for top 20 hubs"))
     return(module_color_i)
   }
+  ## if skipping any modules:
+  # mods_to_skip = c("grey")
+  # if(module_color_i %in% mods_to_skip) {
+  #   print(paste(module_color_i, "skipping"))
+  #   return(module_color_i)
+  # }
   
   module_mm_gs = gene_mm_gs %>% 
     filter(moduleColor == module_color_i) %>% 
